@@ -1,0 +1,427 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="在进行 AngularJS 应用的开发时，经常需要显示图片，而 img 有时候并不能成功的获取到 src 或 ng-src 指定的图片，这时候可能需要通过其它办法来指定一个备用图片，可以想到的办法有：
+
+在 ng-src 的属性中，指定完普通的图片地址后，使用 || 追加备用图片的地址，如
+1ng-src='&#123;&#123;"myImg.png" || "fallback.png"&...">
+  
+  <title>AngularJS 指令 angular-image-404 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2016-03/Angular-Handle-Global-Http-Error-with-Interceptors.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        AngularJS 中利用 Interceptors 来统一处理 HTTP 的错误
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2015-11/Use-Gulp-in-AngularJS-and-Jade-project.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        使用 Gulp 构建 AngularJS / Jade 项目
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>AngularJS 指令 angular-image-404</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2016年1月1日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/AngularJS/">AngularJS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>在进行 AngularJS 应用的开发时，经常需要显示图片，而 <code>img</code> 有时候并不能成功的获取到 <code>src</code> 或 <code>ng-src</code> 指定的图片，这时候可能需要通过其它办法来指定一个备用图片，可以想到的办法有：</p>
+<ul>
+<li><p>在 <code>ng-src</code> 的属性中，指定完普通的图片地址后，使用 <code>||</code> 追加备用图片的地址，如</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ng-src='&#123;&#123;"myImg.png" || "fallback.png"&#125;&#125;'</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用 <code>ng-show</code> 和 <code>ng-hide</code> 控制两个 <code>img</code>，其中一个正常显示图片，另外一个显示力求用图片</p>
+</li>
+</ul>
+<p>开始我也这么做，所以找了一下，发现了一个 AngularJS 指令，<a href="https://github.com/sebasrodriguez/angular-fallback-image" target="_blank" rel="external">angular-fallback-image</a> 不过这个指令并不完善，必须指定指令图片才行，我想要的是，就算没有指定图片，也可以显示一个占位性质的图片，于是我做了修改，发了 <a href="https://github.com/sebasrodriguez/angular-fallback-image/pull/1" target="_blank" rel="external">Pull Request</a> ，不过这位乌拉圭的<a href="https://github.com/sebasrodriguez" target="_blank" rel="external">小哥</a> 似乎有段时间没处理 Github 上的东西了。<br><a id="more"></a></p>
+<p>所以，我开发了 <a href="https://github.com/stiekel/angular-image-404" target="_blank" rel="external">angular-image-404</a>，可以自定义占位图，也可以使用默认的占位图。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2016-03/Angular-Handle-Global-Http-Error-with-Interceptors.html" class="prev">&larr; 上一篇 AngularJS 中利用 Interceptors 来统一处理 HTTP 的错误</a>
+  
+
+  
+
+  
+    <a href="/2015-11/Use-Gulp-in-AngularJS-and-Jade-project.html" class="next">下一篇 使用 Gulp 构建 AngularJS / Jade 项目 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

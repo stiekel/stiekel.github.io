@@ -1,0 +1,413 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="决定这次开始新的Blog历程已经很久了，从今年一月开始，就一直在谋划，结果不幸遇到CNNIC折腾CN域名一事，其后工信部又要求备案时需要验明正身，再后来欣赏了汽车中国的站长的靓照，折来腾去，决定到国外买装备防空袭，尤其是慢慢接触到vpser.net，开始考虑入手VPS。
+当年阿里巴巴的W2C战略，咱兵强马壮的支付宝不能象人民币一样做世界货币了，而我这个死脑筋又对信用卡没有好感，幸好朋友sma...">
+  
+  <title>终于折腾成了WordPress Blog [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2010-03/photonvps-support-alipay.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        PhotonVPS支持支付宝了！
+      </div>
+    </div>
+  
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>终于折腾成了WordPress Blog</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2010年3月10日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/乱七八糟/">乱七八糟</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/Blog/">Blog</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/VPS/">VPS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/wordpress/">wordpress</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>决定这次开始新的Blog历程已经很久了，从今年一月开始，就一直在谋划，结果不幸遇到<a href="http://it.people.com.cn/GB/42891/42894/11100791.html" target="_blank" rel="external">CNNIC折腾CN域名</a>一事，其后工信部又要求备案时需要<a href="http://www.williamlong.info/archives/2096.html" target="_blank" rel="external">验明正身</a>，再后来欣赏了<a href="http://126.fm/460iXp" target="_blank" rel="external">汽车中国的站长</a>的靓照，折来腾去，决定到国外买装备防空袭，尤其是慢慢接触到<a href="http://vpser.net" target="_blank" rel="external">vpser.net</a>，开始考虑入手VPS。</p>
+<p>当年阿里巴巴的<a href="http://www.21cnci.com/view/11419.html" target="_blank" rel="external">W2C战略</a>，咱兵强马壮的支付宝不能象<a href="http://finance.people.com.cn/GB/1040/5530534.html" target="_blank" rel="external">人民币一样做世界货币</a>了，而我这个死脑筋又对信用卡没有好感，幸好朋友<a href="http://finance.people.com.cn/GB/1040/5530534.html" target="_blank" rel="external">smallbee</a>准备折腾一张信用卡，不过等着信用卡办成，也到了二月底，可惜没有29号，不然在二月就开工了。</p>
+<p>3月1号的时候，在Godaddy上入手了域名chensd.com，用了优惠码，7.67美金把事儿给办了，然后又与smallbee一合计，到PhotonVPS上去开了房，一赌气，就只开了仨月，为了尽量不增加美帝的营收，我还选择了for free的VPS控制面板－－Webmin，只为美国人民的GDP增加了29.57块（感谢第一个在域名空间领域使用优惠码的好人！），不过想想我还是很爱国的，我们用的可是咱中土国的卡，<a href="http://www.gznf.net/forum/redirect.php?tid=37857&amp;goto=lastpost" target="_blank" rel="external">GDP是一起涨的</a>，不过可能让外汇流失了一点点。<br>买了VPS后就陷入了无尽的折腾了，都数不清Re-Install OS多少次了，凭着对Ubuntu Linux的不了解，和几乎每步都用Google的决心，前后折腾了大几天，在几次成功又失败后，才终于安定了下来。</p>
+<a id="more"></a>
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2010-03/photonvps-support-alipay.html" class="prev">&larr; 上一篇 PhotonVPS支持支付宝了！</a>
+  
+
+  
+
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

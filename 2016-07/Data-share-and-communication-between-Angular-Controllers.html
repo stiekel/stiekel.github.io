@@ -1,0 +1,451 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="AngularJS 本身已经提供了像指令 Directive 和 服务 Service 一类的方式，来实现数据和代码的共享和复用，但在实际的项目开发中，或许是处于懒惰，亦或是为了便利，总会想在两个控制器之间，直接进行数据的共享通信，或者是函数与方法的调用，这里我们就看看有哪些方法可以满足这个要求。
+单例服务单例服务是 AngularJS 本身支持的数据和代码共享方式，因为是单例的，所有的控制...">
+  
+  <title>Angular 控制器之间的数据共享与通信 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2016-08/Safe-username-password-Login-System.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        打造一个安全的用户名密码登录系统
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2016-07/Authorzation-and-Login-in-Angular.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Angular应用中的登录与身份验证
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Angular 控制器之间的数据共享与通信</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2016年7月28日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/AngularJS/">AngularJS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/前端/">前端</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>AngularJS 本身已经提供了像指令 Directive 和 服务 Service 一类的方式，来实现数据和代码的共享和复用，但在实际的项目开发中，或许是处于懒惰，亦或是为了便利，总会想在两个控制器之间，直接进行数据的共享<br>通信，或者是函数与方法的调用，这里我们就看看有哪些方法可以满足这个要求。</p>
+<h2 id="单例服务"><a href="#单例服务" class="headerlink" title="单例服务"></a>单例服务</h2><p>单例服务是 AngularJS 本身支持的数据和代码共享方式，因为是单例的，所有的控制器访问的便是同一份数据。比如，下面的 Service 便可以实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">angular</div><div class="line">  .module(<span class="string">'app'</span>)</div><div class="line">  .service(<span class="string">'ObjectService'</span>, [ObjectService]);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">ObjectService</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> list = &#123;&#125;;</div><div class="line">  <span class="keyword">return</span> &#123;</div><div class="line">    <span class="attr">get</span>: <span class="function"><span class="keyword">function</span>(<span class="params">id</span>)</span>&#123;</div><div class="line">      <span class="keyword">return</span> list[id];</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">set</span>: <span class="function"><span class="keyword">function</span>(<span class="params">id, v</span>)</span>&#123;</div><div class="line">      list[id] = v;</div><div class="line">    &#125;</div><div class="line">  &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在一个控制器中，调用 <code>ObjectService.set(&#39;i&#39;, 1)</code> 设置的数据，在其它控制器中，便可以通过  <code>ObjectService.get(&#39;i&#39;)</code> 来获取。</p>
+<h2 id="广播与事件"><a href="#广播与事件" class="headerlink" title="广播与事件"></a>广播与事件</h2><p>AngularJS 中在触发事件和发送广播时，都可以传递参数，可以通过这一特性，来实现数据的共享。与事件和广播相关的，共有三个方法，分别是：</p>
+<ul>
+<li><code>$emit()</code>：触发事件，它可以向上传递数据，比如，子控制器向父控制器，还有控制器向 <code>$rootScope</code></li>
+<li><code>$broadcast()</code>：发送广播，它可以向下传递数据，比如，父控制器向子控制器传递数据，或者 <code>$rootScope</code> 向任意控制器传递数据</li>
+<li><code>$on()</code>：监听事件与广播，可以捕获 <code>$emit</code> 和 <code>$broadcast</code></li>
+</ul>
+<p>可以将控制器之间的通信，分为三种情形：</p>
+<ul>
+<li>无直接关联的控制器：使用 <code>$rootScope.$emit()</code>、<code>$rootScope.$boardcast()</code> 或 <code>$scope.$emit</code> 来发出数据，通过 <code>$rootScope.$on()</code> 来获取数据</li>
+<li>父控制器到子控制器：父控制器使用 <code>$scope.$boradcast()</code> 来发送数据，子控制器通过 <code>$scope.$on()</code> 来获取数据</li>
+<li>子控制器至父控制器：子控制器使用 <code>$scope.$emit()</code> 来发送数据，父控制器通过 <code>$scope.$on()</code> 来获取数据</li>
+</ul>
+<p>下面是简单的用法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// one controller</span></div><div class="line">angular</div><div class="line">  .module(<span class="string">'app'</span>)</div><div class="line">  .controller(<span class="string">'OneController'</span>, [<span class="string">'$scope'</span>, OneController]);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">OneController</span>(<span class="params">$scope</span>)</span>&#123;</div><div class="line">  <span class="keyword">var</span> data = &#123;<span class="attr">value</span>: <span class="string">'test'</span>&#125;;</div><div class="line">  $rootScope.$broadcast(<span class="string">'open.notice.editor'</span>, data);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// other controller</span></div><div class="line">angular</div><div class="line">  .module(<span class="string">'app'</span>)</div><div class="line">  .controller(<span class="string">'AnotherController'</span>, [<span class="string">'$scope'</span>, AnotherController]);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">AnotherController</span>(<span class="params">$scope</span>)</span>&#123;</div><div class="line">  $scope.$on(<span class="string">'open.notice.editor'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event, data</span>)</span>&#123;</div><div class="line">    $scope.open(data);</div><div class="line">    $scope.$emit(<span class="string">'notice.editor.opened'</span>);</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="父控制器"><a href="#父控制器" class="headerlink" title="父控制器"></a>父控制器</h2><p>如果两个控制器共同拥有同一个父控制器，则可以通过父控制器来进行数据共享和通信。比如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"ParentController"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"ChildOneController"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"ChildTwoController"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 父控制器</span></div><div class="line">angular</div><div class="line">  .module(<span class="string">'app'</span>)</div><div class="line">  .controller(<span class="string">'ParentController'</span>, [<span class="string">'$scope'</span>, ParentController]);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">ParentController</span>(<span class="params">$scope</span>)</span>&#123;</div><div class="line">  <span class="comment">// 用于传递数据的变量</span></div><div class="line">  $scope.data = <span class="literal">null</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 子控制器</span></div><div class="line">angular</div><div class="line">  .module(<span class="string">'app'</span>)</div><div class="line">  .controller(<span class="string">'ChildOneController'</span>, [<span class="string">'$scope'</span>, ChildOneController]);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">ChildOneController</span>(<span class="params">$scope</span>)</span>&#123;</div><div class="line">  <span class="comment">// 数据设置</span></div><div class="line">  $scope.$parent.data = <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 子控制器</span></div><div class="line">angular</div><div class="line">  .module(<span class="string">'app'</span>)</div><div class="line">  .controller(<span class="string">'ChildTwoController'</span>, [<span class="string">'$scope'</span>, <span class="string">'$timeout'</span>, ChildTwoController]);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">ChildTwoController</span>(<span class="params">$scope, $timeout</span>)</span>&#123;</div><div class="line">  $timeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="comment">// 数据读取</span></div><div class="line">    <span class="built_in">console</span>.log($scope.$parent.data);</div><div class="line">  &#125;, <span class="number">1000</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="全局或共用的变量"><a href="#全局或共用的变量" class="headerlink" title="全局或共用的变量"></a>全局或共用的变量</h2><p>AngularJS 提供了对 <code>window</code> 和 <code>localStorage</code> 两个变量的封装，<code>$window</code> 和 <code>$localStorage</code> ，通过修改和监听这两个值，可以达到在控制器之间数据共享和通信的目的。方法如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// one controller</span></div><div class="line">angular</div><div class="line">  .module(<span class="string">'app'</span>)</div><div class="line">  .controller(<span class="string">'OneController'</span>, [<span class="string">'$scope'</span>, <span class="string">'$window'</span>, OneController]);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">OneController</span>(<span class="params">$scope, $window</span>)</span>&#123;</div><div class="line">  <span class="comment">// 数据设置</span></div><div class="line">  $<span class="built_in">window</span>.data = <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// other controller</span></div><div class="line">angular</div><div class="line">  .module(<span class="string">'app'</span>)</div><div class="line">  .controller(<span class="string">'AnotherController'</span>, [<span class="string">'$scope'</span>, AnotherController]);</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">AnotherController</span>(<span class="params">$scope</span>)</span>&#123;</div><div class="line">  <span class="comment">// 监听修改</span></div><div class="line">  $scope.$watch(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">return</span> $<span class="built_in">window</span>.data;</div><div class="line">  &#125;, <span class="function"><span class="keyword">function</span>(<span class="params">n</span>)</span>&#123;</div><div class="line">    $scope.windowData = n;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其实，这种监听修改的方式，也可以用在其它通信方式中。</p>
+<h2 id="元素绑定"><a href="#元素绑定" class="headerlink" title="元素绑定"></a>元素绑定</h2><p>AngularJS 中，可以通过一个元素，来获取其上的控制器实例。通过这种方式便可以快速的获取<br>修改某个控制器中的数据，或者调用这个控制器中的方法。比如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"AppController"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"div-a"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>可以通过以下的方法，来获取控制器实例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> instance = angular.element(<span class="built_in">document</span>.getElementById(<span class="string">'div-a'</span>)).scope();</div></pre></td></tr></table></figure>
+<p>接着，便可以通过这个 <code>instance</code> 来调用控制器的方法，获取和修改值了。无法是元素本身绑定有控制器，还是元素的父级元素绑定有控制器，都可以成功的获取。</p>
+<p>茴字有很多写法，具体写的时候用哪种，完全看情况和心情。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#单例服务"><span class="toc-text">单例服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#广播与事件"><span class="toc-text">广播与事件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#父控制器"><span class="toc-text">父控制器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#全局或共用的变量"><span class="toc-text">全局或共用的变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#元素绑定"><span class="toc-text">元素绑定</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2016-08/Safe-username-password-Login-System.html" class="prev">&larr; 上一篇 打造一个安全的用户名密码登录系统</a>
+  
+
+  
+
+  
+    <a href="/2016-07/Authorzation-and-Login-in-Angular.html" class="next">下一篇 Angular应用中的登录与身份验证 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,451 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="最近做一个垂直社区项目，图片上传是现如今社区的标配，何况面向的还是女性用户。后端使用Node.js，图片上传必然是要不刷新不用iframe了。顺便，也测试了一下Coding.net的“演示”功能，的确是方便免费够用，代码传上去基本零配置就可以跑起来了。这篇文章涉及的代码托管在Coding上，最终的例子也是运行在Coding的免费服务器上。
+协议与结构整个上传采用RFC1867协议，即基于HT...">
+  
+  <title>利用Ajax无刷新上传文件到Node.js服务器 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2015-03/AngularJS-ngOptions-ngRepeat-filter-exclude-and-screen.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        使用过滤器filter在ngOptions和ngRepeat中筛选与排除
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2015-01/45-useful-javascript-tips-tricks-and-best-practices.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        JavaScript奇技淫巧45招
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>利用Ajax无刷新上传文件到Node.js服务器</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2015年1月30日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Node-js/">Node.js</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/jQuery/">jQuery</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>最近做一个垂直社区项目，图片上传是现如今社区的标配，何况面向的还是女性用户。后端使用Node.js，图片上传必然是要不刷新不用iframe了。顺便，也测试了一下<a href="https://coding.net/" target="_blank" rel="external">Coding.net</a>的“演示”功能，的确是方便免费够用，代码传上去基本零配置就可以跑起来了。这篇文章涉及的代码托管在Coding上，最终的例子也是运行在Coding的免费服务器上。</p>
+<h2 id="协议与结构"><a href="#协议与结构" class="headerlink" title="协议与结构"></a>协议与结构</h2><p>整个上传采用<a href="https://www.ietf.org/rfc/rfc1867.txt" target="_blank" rel="external">RFC1867协议</a>，即基于HTML表单的文件上传协议。借助这个协议，为表单增加<code>enctype=&quot;multipart/form-data&quot;</code>，再使用<code>type</code>为<code>file</code>的<code>input</code>控制来选择文件，然后便可用POST方法上传文件。</p>
+<p>文件上传时会分段提交，借助Connect的<a href="https://github.com/andrewrk/connect-multiparty" target="_blank" rel="external">connect-multiparty</a>模块，即可接收各段组合整理为文件，并将文件存到临时目录，我们可再编写其它代码来处理文件。本例中，我们会把文件复制到<code>public</code>目录，以提供web访问。</p>
+<p>整个示例程序包括以下几部分：</p>
+<ul>
+<li>HTML表单，负责文件的选择</li>
+<li>JavaScript组织表单数据，执行上传</li>
+<li>Node.js接受上传的文件，并负责文件的移动和组织</li>
+</ul>
+<p>示例程序的代码托管在Coding上的<a href="https://coding.net/u/Stiekel/p/Node.js-Ajax-Upload-File/git" target="_blank" rel="external">Node.js-Ajax-Upload-File</a>，在线演示地址为<a href="http://node-js-ajax-upload-file.codingapp.com/" target="_blank" rel="external">node-js-ajax-upload-file.codingapp.com</a>。<a id="more"></a></p>
+<p>下面开工。</p>
+<h2 id="HTML表单组织"><a href="#HTML表单组织" class="headerlink" title="HTML表单组织"></a>HTML表单组织</h2><p>表单很简单，就一个文件选择的控件。当<code>type</code>为<code>file</code>的<code>input</code>控件除了常规属性，还包括一个<a href="http://stackoverflow.com/questions/181214/file-input-accept-attribute-is-it-useful" target="_blank" rel="external">accept</a>属性，用于定义可以选择的文件类型。</p>
+<p>HTML中包括一个表单，一个提交按钮，和一个显示成功上传到服务器的图片的控件，主要代码如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">class</span> = <span class="string">"form-horizontal"</span> <span class="attr">enctype</span>=<span class="string">'multipart/form-data'</span> <span class="attr">method</span>=<span class="string">'post'</span> <span class="attr">action</span>=<span class="string">'javascript:;'</span> <span class="attr">role</span> = <span class="string">"form"</span> <span class="attr">id</span> = <span class="string">"frmUploadFile"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span> = <span class="string">"form-group"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">class</span> = <span class="string">"control-label col-sm-2"</span>&gt;</span>上传选择<span class="tag">&lt;/<span class="name">label</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span> = <span class="string">"col-sm-4"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span> = <span class="string">"file"</span> <span class="attr">name</span> = <span class="string">"files"</span> <span class="attr">class</span> = <span class="string">"form-control"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span> = <span class="string">"form-group"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span> = <span class="string">"col-sm-offset-2 col-sm-4"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">button</span> <span class="attr">class</span> = <span class="string">"btn btn-primary"</span> <span class="attr">onClick</span> = <span class="string">"uploadFile()"</span>&gt;</span>上传<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span> = <span class="string">"help-inline"</span> <span class="attr">id</span> = <span class="string">"spanMessage"</span>&gt;</span>选择文件，并上传<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span> = <span class="string">"row"</span> <span class="attr">style</span> = <span class="string">"text-align: center"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">img</span> <span class="attr">id</span> = <span class="string">"imgShow"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>完整代码请查看<a href="https://coding.net/u/Stiekel/p/Node.js-Ajax-Upload-File/git/blob/master/public/index.html" target="_blank" rel="external">public/index.html</a>。</p>
+<h2 id="Ajax执行上传"><a href="#Ajax执行上传" class="headerlink" title="Ajax执行上传"></a>Ajax执行上传</h2><p>浏览器端的JavaScript会将表单中的数据格式化，再以POST方法上传文件，为了简便，使用了jQuery库来操作，具体代码比较简单，上传文件，然后根据服务器端的返回判定上传是否成功，如果成功，则显示图片。</p>
+<p>代码包装为自定义的函数，由“发送”按钮的单击事件调用，代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">uploadFile</span>(<span class="params"></span>)</span>&#123;</div><div class="line">  <span class="keyword">var</span> formData = <span class="keyword">new</span> FormData($(<span class="string">"#frmUploadFile"</span>)[<span class="number">0</span>]);</div><div class="line">  $.ajax(&#123;</div><div class="line">    <span class="attr">url</span>: <span class="string">'/upload'</span>,</div><div class="line">    <span class="attr">type</span>: <span class="string">'POST'</span>,</div><div class="line">    <span class="attr">data</span>: formData,</div><div class="line">    <span class="attr">async</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">cache</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">contentType</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">processData</span>: <span class="literal">false</span>,</div><div class="line">    <span class="attr">success</span>: <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">      <span class="keyword">if</span>(<span class="number">200</span> === data.code) &#123;</div><div class="line">        $(<span class="string">"#imgShow"</span>).attr(<span class="string">'src'</span>, data.msg.url);</div><div class="line">        $(<span class="string">"#spanMessage"</span>).html(<span class="string">"上传成功"</span>);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        $(<span class="string">"#spanMessage"</span>).html(<span class="string">"上传失败"</span>);</div><div class="line">      &#125;</div><div class="line">      <span class="built_in">console</span>.log(<span class="string">'imgUploader upload success, data:'</span>, data);</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">error</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">      $(<span class="string">"#spanMessage"</span>).html(<span class="string">"与服务器通信发生错误"</span>);</div><div class="line">    &#125;</div><div class="line">  &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>具体请参见文件<a href="https://coding.net/u/Stiekel/p/Node.js-Ajax-Upload-File/git/blob/master/public/demo.js" target="_blank" rel="external">pubilc/demo.js</a>。</p>
+<h2 id="Node-js接收文件"><a href="#Node-js接收文件" class="headerlink" title="Node.js接收文件"></a>Node.js接收文件</h2><p>通过POST接收到的文件，由<code>connect-multiparty</code>负责重新组织为文件，并存储到临时文件夹中，Linux默认为<code>/tmp</code>目录，然后再将文件信息放到<code>req.files</code>对象中，对象中按<code>input</code>的<code>name</code>属性来组织文件列表，我们上面的表单中的<code>input</code>控件<code>name</code>为<code>files</code>，所以文件的信息便存储在<code>req.files.files</code>中。通过它可获取文件的存储位置和文件名等信息。</p>
+<p>整个服务器端的代码很简单，连同注释不过20多行，其中处理请求部分的代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> multipart = <span class="built_in">require</span>(<span class="string">'connect-multiparty'</span>);</div><div class="line">app.post(<span class="string">'/upload'</span>, multipart(), <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</div><div class="line">  <span class="comment">//get filename</span></div><div class="line">  <span class="keyword">var</span> filename = req.files.files.originalFilename || path.basename(req.files.files.ws.path);</div><div class="line">  <span class="comment">//copy file to a public directory</span></div><div class="line">  <span class="keyword">var</span> targetPath = path.dirname(__filename) + <span class="string">'/public/'</span> + filename;</div><div class="line">  <span class="comment">//copy file</span></div><div class="line">  fs.createReadStream(req.files.files.ws.path).pipe(fs.createWriteStream(targetPath));</div><div class="line">  <span class="comment">//return file url</span></div><div class="line">  res.json(&#123;<span class="attr">code</span>: <span class="number">200</span>, <span class="attr">msg</span>: &#123;<span class="attr">url</span>: <span class="string">'http://'</span> + req.headers.host + <span class="string">'/'</span> + filename&#125;&#125;);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>完整代码请参阅<a href="https://coding.net/u/Stiekel/p/Node.js-Ajax-Upload-File/git/blob/master/app.js" target="_blank" rel="external">app.js</a>。</p>
+<h2 id="示例程序的运行"><a href="#示例程序的运行" class="headerlink" title="示例程序的运行"></a>示例程序的运行</h2><p>如果系统中已经安装了git，则可以用下面的命令克隆：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ git <span class="built_in">clone</span> https://coding.net/Stiekel/Node.js-Ajax-Upload-File.git</div></pre></td></tr></table></figure>
+<p>也可以<a href="https://coding.net/u/Stiekel/p/Node.js-Ajax-Upload-File/git/archive/master" target="_blank" rel="external">下载zip包</a>，程序中的前端包都使用的是百度的公开库，后端代码使用npm管理，进入应用目录，执行如下的命令安装：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ npm install</div></pre></td></tr></table></figure>
+<p>然后执行如下的命令可以启动应用：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ node app.js</div></pre></td></tr></table></figure>
+<p>再通过浏览器访问<code>http://ip:3000/</code>即可。注意，上传的文件会保存在<code>/tmp</code>和<code>public</code>两个目录中。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#协议与结构"><span class="toc-text">协议与结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTML表单组织"><span class="toc-text">HTML表单组织</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ajax执行上传"><span class="toc-text">Ajax执行上传</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Node-js接收文件"><span class="toc-text">Node.js接收文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#示例程序的运行"><span class="toc-text">示例程序的运行</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2015-03/AngularJS-ngOptions-ngRepeat-filter-exclude-and-screen.html" class="prev">&larr; 上一篇 使用过滤器filter在ngOptions和ngRepeat中筛选与排除</a>
+  
+
+  
+
+  
+    <a href="/2015-01/45-useful-javascript-tips-tricks-and-best-practices.html" class="next">下一篇 JavaScript奇技淫巧45招 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,465 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="由于该模块已经停止针对 AngularJS 1.4.7 及以下版本的维护，请不要再在项目中使用。
+Angular2虽然还没有正式发布，但全新设计的路由模块已经提前面世，它从AngularJS 1.4开始支持。相对于老的ngRoute，使用更方便，配置更简单，更加注重约定。新的路由模块被命名为Angualar New Router，以前的ui-view被新的ng-viewport取而代之，另外...">
+  
+  <title>Angular2路由模块简介 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2015-07/websocket-stress-test-and-performance-test.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        WebSocket的性能与压力测试
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2015-06/AngularJS-popular-Plugins-and-Directive.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        AngularJS常用插件与指令收集
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Angular2路由模块简介</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2015年6月7日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/AngularJS/">AngularJS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+    </p>
+    
+    <p><strong>由于该模块已经停止针对 AngularJS 1.4.7 及以下版本的维护，请不要再在项目中使用。</strong></p>
+<p>Angular2虽然还没有正式发布，但全新设计的路由模块已经提前面世，它从AngularJS 1.4开始支持。相对于老的<code>ngRoute</code>，使用更方便，配置更简单，更加注重约定。新的路由模块被命名为<a href="https://github.com/angular/router" target="_blank" rel="external">Angualar New Router</a>，以前的<code>ui-view</code>被新的<code>ng-viewport</code>取而代之，另外引入了<code>component</code>的概念。我们用一个例子来对它做一个简单的了解。</p>
+<p>先放<a href="https://coding.net/u/Stiekel/p/static/git/tree/master/public/angular-new-router" target="_blank" rel="external">代码</a>和<a href="http://stiekel.coding.io/angular-new-router/#/" target="_blank" rel="external">DEMO</a>。</p>
+<a id="more"></a>
+<h3 id="基础代码"><a href="#基础代码" class="headerlink" title="基础代码"></a>基础代码</h3><p>先来构建基础的HTML和JS代码，<a href="https://coding.net/u/Stiekel/p/static/git/blob/master/public/angular-new-router/index.html" target="_blank" rel="external">index.html</a>代码如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Angular New Router Test<span class="tag">&lt;/<span class="name">title</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-app</span>=<span class="string">"webApp"</span> <span class="attr">ng-controller</span>=<span class="string">"AppController as app"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">ng-viewport</span>&gt;</span><span class="tag">&lt;/<span class="name">ng-viewport</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"../lib/angular2/angular.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"../lib/angular-new-router/dist/router.es5.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"./app.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>然后是AngularJS基础代码，<a href="https://coding.net/u/Stiekel/p/static/git/blob/master/public/angular-new-router/app.js" target="_blank" rel="external">app.js</a>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line"></div><div class="line">angular.module(<span class="string">'webApp'</span>, [<span class="string">'ngNewRouter'</span>])</div><div class="line">  .controller(<span class="string">'AppController'</span>, [<span class="string">'$router'</span>, AppController]);</div><div class="line"></div><div class="line">AppController.$routeConfig = [</div><div class="line">];</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">AppController</span> (<span class="params">$router</span>) </span>&#123;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="构件component"><a href="#构件component" class="headerlink" title="构件component"></a>构件<code>component</code></h3><p>AngularJS 1.3之前，在配置一个路由页面时，一般会包括一个HTML模板，一个控制器和一套路由配置。路由配置中，要指定相应的HTML模板和控制器名称。在新的路由策略中，这些被构件（<code>component</code>）所取代，一个构件包括以下几部分：</p>
+<ul>
+<li>独立的目录，目录名就是构件名</li>
+<li>目录内，与目录同名的一个js文件，用它来存储模块和控制器代码</li>
+<li>目录内，与目录同名的HTML文件</li>
+</ul>
+<p>比如，像下面这样：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">home/</div><div class="line">├── home.html</div><div class="line">└── home.js</div></pre></td></tr></table></figure>
+<p>单从上面这几部分来讲，可能看不出来构件的优势，但在路由配置的时候，你根本不用指定HTML文件，也不用指定控制器名字，只需要直接使用构件名——也就是目录名就行了。像这样：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;<span class="attr">path</span>: <span class="string">'/'</span>, <span class="attr">component</span>: <span class="string">'home'</span>&#125;</div></pre></td></tr></table></figure>
+<p>配置的代码简化了许多，而你所需要做的，就是遵循约定，使用约定来取代配置。先来看看<code>home.js</code>文件，它包括控制器和模块代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">angular.module(<span class="string">'webApp.home'</span>, [])</div><div class="line">  .controller(<span class="string">'HomeController'</span>, [<span class="string">"$router"</span>, HomeController]);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">HomeController</span>(<span class="params">$router</span>) </span>&#123;</div><div class="line">  <span class="keyword">this</span>.AppName = <span class="string">'Angular New Router示例'</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>终于不再<code>$scope</code>满天飞了，控制器更符合面向对象的概念，使用了<code>this</code>。以前在HTML中，是直接使用控制器内的变量，再在，需要指定构件名了，如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"page-header"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">h3</span>&gt;</span>&#123;&#123;home.AppName&#125;&#125;<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>构件的js文件，需要使用<code>&lt;script&gt;</code>来导入，另外还要在<code>app.js</code>的主模块中，加入对构件模块的依赖，如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">angular.module(<span class="string">'webApp'</span>,</div><div class="line">    [<span class="string">'ngNewRouter'</span>, <span class="string">'webApp.home'</span>, <span class="string">'webApp.articles'</span>]</div><div class="line">  )</div><div class="line">  .controller(<span class="string">'AppController'</span>, [<span class="string">'$router'</span>, AppController]);</div></pre></td></tr></table></figure>
+<p>在上面的<code>index.html</code>文件中，曾经为BODY元素指定了控制器：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">body</span> <span class="attr">ng-app</span>=<span class="string">"webApp"</span> <span class="attr">ng-controller</span>=<span class="string">"AppController as app"</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>如果要使用<code>AppController</code>中的变量，则需要像下面这样：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123;app.AppName&#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="路由的配置"><a href="#路由的配置" class="headerlink" title="路由的配置"></a>路由的配置</h3><p><code>ngRoute</code>中的路由配置，结构还是比较复杂的——反正我每次都是从现成的路由配置文件复制过来，不然可真记不住。但新的路由模块配置，相当简单方便，其实刚刚我们已经看过一行了，再来看看完整的代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">AppController.$routeConfig = [</div><div class="line">  &#123;<span class="attr">path</span>: <span class="string">'/'</span>, <span class="attr">component</span>: <span class="string">'home'</span>&#125;</div><div class="line">];</div></pre></td></tr></table></figure>
+<p>没错，直接设置控制器的属性就行了。还可以在控制器代码内配置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">AppController</span>(<span class="params">$router</span>) </span>&#123;</div><div class="line">  $router.config([</div><div class="line">    &#123;<span class="attr">path</span>: <span class="string">'/index'</span>, <span class="attr">redirectTo</span>: <span class="string">'/'</span>&#125;</div><div class="line">  ]);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以前的<code>url</code>属性，现在叫<code>path</code>了，单从字面意思上讲，其实用<code>path</code>更准确。如果要设置某个路由直接跳转到另外一个，使用<code>redirectTo</code>即可：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">AppController.$routeConfig = [</div><div class="line">  &#123;<span class="attr">path</span>: <span class="string">'/'</span>, <span class="attr">component</span>: <span class="string">'home'</span>&#125;,</div><div class="line">  &#123;<span class="attr">path</span>: <span class="string">'/index'</span>, <span class="attr">redirectTo</span>: <span class="string">'/'</span>&#125;</div><div class="line">];</div></pre></td></tr></table></figure>
+<p>当然，你也可以直接设置别名：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;<span class="attr">path</span>: <span class="string">'/'</span>, <span class="attr">component</span>: <span class="string">'home'</span>, <span class="attr">as</span>: <span class="string">'home'</span>&#125;</div></pre></td></tr></table></figure>
+<p>基本上，一个路由只需要一条无需换行的代码便可以配置完成了。</p>
+<h3 id="指向路由的链接"><a href="#指向路由的链接" class="headerlink" title="指向路由的链接"></a>指向路由的链接</h3><p><code>ngRoute</code>中是使用<code>ui-sref</code>来创建链接，现在增加了一个<code>ng-link</code>，虽然名字变了，但用法其实差不多，使用如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">ng-link</span>=<span class="string">'index'</span> <span class="attr">class</span>=<span class="string">"navbar-brand"</span>&gt;</span>Angular2的路由<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="ng-viewport"><a href="#ng-viewport" class="headerlink" title="ng-viewport"></a><code>ng-viewport</code></h3><p>实在不知道这个<code>viewport</code>怎么个翻译，查了下<a href="http://dict.youdao.com/search?q=viewport" target="_blank" rel="external">有道</a>，居然叫视口——好吓人的感觉。</p>
+<p>其实，它和以前的<code>ui-view</code>差不多，用法如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">ng-viewport</span>&gt;</span><span class="tag">&lt;/<span class="name">ng-viewport</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-viewport</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-viewport</span>=<span class="string">"content"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>这三种都行。最后一种用于有多个构件需要加载的情况。</p>
+<h3 id="路由参数"><a href="#路由参数" class="headerlink" title="路由参数"></a>路由参数</h3><p>路由参数和以前相比，没什么变化，它在路由中的配置如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;<span class="attr">path</span>: <span class="string">'/articles/:id'</span>, <span class="attr">component</span>: <span class="string">'articles'</span>&#125;</div></pre></td></tr></table></figure>
+<p>在控制器中，也还是使用<code>$routeParams</code>，如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">angular.module(<span class="string">'webApp.articles'</span>, [])</div><div class="line">  .controller(<span class="string">"ArticlesController"</span>, [<span class="string">'$routeParams'</span>, <span class="string">'$router'</span>, ArticlesController]);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">ArticlesController</span>(<span class="params">$routeParams, $router</span>)</span>&#123;</div><div class="line">  <span class="keyword">this</span>.id = $routeParams.id || <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>链接的格式也没有变化，仍然使用：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">ng-link</span>=<span class="string">'articles(&#123;id: 1&#125;)'</span>&gt;</span>AngularJS常用插件与指令收集<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>打完收功。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#基础代码"><span class="toc-text">基础代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#构件component"><span class="toc-text">构件component</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#路由的配置"><span class="toc-text">路由的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#指向路由的链接"><span class="toc-text">指向路由的链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ng-viewport"><span class="toc-text">ng-viewport</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#路由参数"><span class="toc-text">路由参数</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2015-07/websocket-stress-test-and-performance-test.html" class="prev">&larr; 上一篇 WebSocket的性能与压力测试</a>
+  
+
+  
+
+  
+    <a href="/2015-06/AngularJS-popular-Plugins-and-Directive.html" class="next">下一篇 AngularJS常用插件与指令收集 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

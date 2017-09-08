@@ -1,0 +1,453 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="在追求风格一致的项目中，无论是UI设计还是程序代码，都希望尽量更多的重用，一来修改方便，二来提高效率。对于WEB程序实现，设计的重用更多的时候也是代码的重用，在完成前期的工作后，如果后期能够模套用模板一样来进行，那将大大利于项目的进行。
+为了能够实现模板这个功能，在ASP.NET 1.x中提供了用户控件（User Control），到了ASP.NET 2.0还出现了母版（Master Pag...">
+  
+  <title>ASP.NET中五种实现模板功能的方法 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2011-02/asp-dot-net-source-tools-viewcode.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        ASP.NET源码阅读小工具：ViewCode
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2011-02/translattion-chapter-11-using-an-options-file.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        译文：在MySQL中使用选项文件（Options File）
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>ASP.NET中五种实现模板功能的方法</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2011年2月23日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/ASP-NET/">ASP.NET</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>在追求风格一致的项目中，无论是UI设计还是程序代码，都希望尽量更多的重用，一来修改方便，二来提高效率。对于WEB程序实现，设计的重用更多的时候也是代码的重用，在完成前期的工作后，如果后期能够模套用模板一样来进行，那将大大利于项目的进行。</p>
+<p>为了能够实现模板这个功能，在ASP.NET 1.x中提供了用户控件（User Control），到了ASP.NET 2.0还出现了母版（Master Page），除此之外，还有三种方法可以达到类似的目的，具体实现却各有优点。</p>
+<h3 id="一、抄在前面"><a href="#一、抄在前面" class="headerlink" title="一、抄在前面"></a>一、抄在前面</h3><p>有一回对我说道，“你读过书么？”我略略点一点头。他说，“读过书，……我便考你一考。茴香豆的茴字，怎样写的？”我想，讨饭一样的人，也配考我么？便回过脸去，不再理会。孔乙己等了许久，很恳切的说道，“不能写罢？……我教给你，记着！这些字应该记着。将来做掌柜的时候，写账要用。”我暗想我和掌柜的等级还很远呢，而且我们掌柜也从不将茴香豆上账；又好笑，又不耐烦，懒懒的答他道，“谁要你教，不是草头底下一个来回的回字么？”孔乙己显出极高兴的样子，将两个指头的长指甲敲着柜台，点头说，“对呀对呀！……回字有四样写法，你知道么？”我愈不耐烦了，努着嘴走远。孔乙己刚用指甲蘸了酒，想在柜上写字，见我毫不热心，便又叹一口气，显出极惋惜的样子。</p>
+<p>——周树人《<a href="http://zh.wikisource.org/zh-hans/%E5%AD%94%E4%B9%99%E5%B7%B1" target="_blank" rel="external">孔乙己</a>》·1919年</p>
+<h3 id="二、实现方法"><a href="#二、实现方法" class="headerlink" title="二、实现方法"></a>二、实现方法</h3><p>为了方便理解，在这里将分别使用这五种方法来完成如下的内容的页面，页面分为三部分，上半部分为header，下半部分为footer，要求将这两部分模板化，具体各页面只需要对中间的内容进行指定即可。本文最末提供了所有源代码的下载。<a id="more"></a></p>
+<p><a href="/upfile/2011/02/TemplateTest_site_shutcat.png"><img src="/upfile/2011/02/TemplateTest_site_shutcat.png" alt="aoisola" title="aoisola"></a></p>
+<h4 id="1、使用母版方法实现"><a href="#1、使用母版方法实现" class="headerlink" title="1、使用母版方法实现"></a>1、使用母版方法实现</h4><p>母版是在ASP.NET 2.0以后才出现的，使用母版时，相当于将页面的整体结构先构架出来，将各个页不同的位置放置一个contentplaceholder控件，并用ID区别之，套用母版时，只需要声明来自某母版，然后将区别于其它页的部分用Content控件组织起来，再指出它应该出现的位置的contentplaceholder ID，即可完成设计。</p>
+<p>母版页就像是在一个完成的页面中挖空，然后在具体页面设计时再填空。空的个数可以在母版页中进行定义。</p>
+<p>在Visual Studio 2005中新建一个网站，为了方便，我们将对各部分的样式独立一到个样式表中，在解决方案管理器中添加一个新项，模板中选择样式表，命名为style.css，内容如下：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">body</span> &#123;</div><div class="line"><span class="attribute">background-color</span>:<span class="number">#bbb</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-id">#header</span> &#123;</div><div class="line">  <span class="attribute">background-color</span>:<span class="number">#aaa</span>;</div><div class="line">  <span class="attribute">text-align</span>:center;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="selector-id">#footer</span> &#123;</div><div class="line">  <span class="attribute">background-color</span>:<span class="number">#aaa</span>;</div><div class="line">  <span class="attribute">text-align</span>:left;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>再在解决方案管理器中添加一个新项，模板选择“母版页”，命名为TestMasterPage.master，切换到“源视图”，在<head>和</head>中添加如下一行，以引用样式表：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span> = <span class="string">"style.css"</span> <span class="attr">rel</span> = <span class="string">"stylesheet"</span> <span class="attr">type</span> = <span class="string">"text/css"</span> /&gt;</span></div></pre></td></tr></table></figure>
+<p>然后在<form>和</form>之间添加如下代码：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;div&gt;</div><div class="line">  &lt;div id="header"&gt;</div><div class="line">    &lt;h2&gt;Template Test ASP.NET Site&lt;/h2&gt;</div><div class="line">    &lt;hr /&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">  &lt;asp:contentplaceholder id="testContentPlaceHolder" runat="server"&gt;</div><div class="line">  &lt;/asp:contentplaceholder&gt;</div><div class="line">&lt;/div&gt;</div><div class="line">&lt;div id="footer"&gt;</div><div class="line">  &lt;hr /&gt;</div><div class="line">  &lt;a href="javascript:history.go('-1')"&gt;Back&lt;/a|</div><div class="line">  &lt;a href = "default.aspx" &gt;HomePage&lt;/a|</div><div class="line">  &lt;a href = "javascript:history.go('1')"&gt;Next&lt;/a&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>其中<asp:contentplaceholder...>就是在引用母版页的其它页中可以指定内容的位置。</asp:contentplaceholder...></p>
+<p>再在解决方案管理器中添加一个新项，模板中选择“Web窗体”，文件名为“TemplateByMasterPage.aspx”，并勾选“选择母版页”，点击“添加”后选择刚刚新建的母版页TestMasterPage.master。切换到源视图，添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;asp:Content ID=&quot;Content1&quot; ContentPlaceHolderID=&quot;testContentPlaceHolder&quot; Runat=&quot;Server&quot;&gt;</div><div class="line">  &lt;p&gt;</div><div class="line">    This page achiveve by masterpage.</div><div class="line">    &lt;br /&gt; MasterPage: &lt;strong&gt;TestMasterPage.master&lt;/strong&gt;</div><div class="line">  &lt;/p&gt;</div><div class="line">&lt;/asp:Content&gt;</div></pre></td></tr></table></figure></p>
+<p>这便在母版页的指定位置实现了区别化的部分。</p>
+<h4 id="2、使用用户控件实现"><a href="#2、使用用户控件实现" class="headerlink" title="2、使用用户控件实现"></a>2、使用用户控件实现</h4><p>在ASP.NET一出现便提供了用户控件，它的目的是为了让用户将多个经常固定出现的控件或者代码，封装起来组织成一个新的引用单位，用户控件的目的是为了便于用户掌握模块粒度，在模块的耦合与内聚之间进行平衡。</p>
+<p>相对于母版的填空，控件更像是组装。</p>
+<p>由于我们要实现的页面具有三个部分，有两个部分需要模板化，那就需要新建两个用户控件。</p>
+<p>在解决方案管理器中添加一个新项，模板选择“Web用户控件”，命名为TemplateByUserControl_header.ascx，然后在源视图中添加如下代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"header"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">h2</span>&gt;</span>Template Test ASP.NET Site<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">hr</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>再添加另外一个用户控件，命名为TemplateByUserControl_footer.ascx，添加如下代码：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;div id = "footer" &gt;</div><div class="line">  &lt;hr /&gt;</div><div class="line">  &lt;a href = "javascript:history.go('-1')"&gt;Back&lt;/a|</div><div class="line">  &lt;a href = "default.aspx" &gt;HomePage&lt;/a|</div><div class="line">  &lt;a href = "javascript:history.go('1')"&gt;Next&lt;/a&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+<p>两个用户控件便添加完成了。在解决方案管理器中添加一个Web窗体新项，命名为TemplateByUserControl.aspx，在&lt;%@ Page …%&gt;行后添加如下两行，用以注册刚刚建立的两个用户控件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;%@ Register Src=&quot;TemplateByUserControl_footer.ascx&quot; TagName=&quot;TemplateByUserControl_footer&quot; TagPrefix=&quot;uc_footer&quot; %&gt;</div><div class="line">&lt;%@ Register Src=&quot;TemplateByUserControl_header.ascx&quot; TagName=&quot;TemplateByUserControl_header&quot; TagPrefix=&quot;uc_header&quot; %&gt;</div></pre></td></tr></table></figure>
+<p>这便完成了用户控件的引用，然后在页面的<head>部分中添加对样式表的引用。再在<form>中添加如下的代码：</form></head></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;uc_header:TemplateByUserControl_header ID=&quot;id_uc_header&quot; runat=&quot;server&quot; /&gt;</div><div class="line">&lt;p&gt;</div><div class="line">This Page Achieve by UserControls.&lt;br /&gt;</div><div class="line">UserControls: &lt;strong&gt;TemplateByUserControl_header.ascx&lt;/strongand &lt;strong&gt;TemplateByUserControl_footer.ascx&lt;/strong&gt;</div><div class="line">&lt;/p&gt;</div><div class="line">&lt;uc_footer:TemplateByUserControl_footer ID=&quot;id_uc_footer&quot; runat=&quot;server&quot; /&gt;</div></pre></td></tr></table></figure>
+<p>这便并两个用户控件安放到了页面中指定的位置。</p>
+<h4 id="3、利用Response-WriteFile来直接输出html文件"><a href="#3、利用Response-WriteFile来直接输出html文件" class="headerlink" title="3、利用Response.WriteFile来直接输出html文件"></a>3、利用Response.WriteFile来直接输出html文件</h4><p>Response.WriteFile方法可以直接将某个文件输出到发给浏览器的HTML代码中，其实它与Response.Write功能极其相似，只是其输出到HTML代码中的内容来源不一样而已。</p>
+<p>和用户控件一样，这两部分需要两个Response.WriteFile语句来分别输出，而它们又来处于两个不同的HTML页。<br>在解决方案管理器中添加一个新项，在模板中选择“文本文件”，命名为header.inc，输入如下代码：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span> = <span class="string">"header"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">h2</span>&gt;</span>Template Test ASP.NET Site<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">hr</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>再新建另外一个文本文件，命名为footer.inc，代码内容如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;div id = "footer" &gt;</div><div class="line">&lt;hr /&gt;</div><div class="line">&lt;a href = "javascript:history.go('-1')"&gt;Back&lt;/a|</div><div class="line">&lt;a href = "default.aspx" &gt;HomePage&lt;/a|</div><div class="line">&lt;a href = "javascript:history.go('1')"&gt;Next&lt;/a&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
+<p>再在解决方案管理器中添加一个新项，在模板中选择“Web窗体”，命名为TemplateByWriteFile.aspx。再在<form>中添加如下代码：</form></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;% Response.WriteFile(&quot;header.inc&quot;); %&gt;</div><div class="line">&lt;p&gt;</div><div class="line">This page achieve by Response.WriteFile Method.&lt;br /&gt;</div><div class="line">INC file: &lt;strong&gt;header.inc&lt;/strong&gt;  and &lt;strong&gt;footer.inc&lt;/strong&gt;</div><div class="line">&lt;/p&gt;</div><div class="line">&lt;% Response.WriteFile(&quot;footer.inc&quot;); %&gt;</div></pre></td></tr></table></figure>
+<p>注意在页的<head>中添加对样式表的引用，即可实现。</head></p>
+<h4 id="4、通过使用Include添加ASPX文件的方法实现"><a href="#4、通过使用Include添加ASPX文件的方法实现" class="headerlink" title="4、通过使用Include添加ASPX文件的方法实现"></a>4、通过使用Include添加ASPX文件的方法实现</h4><p>利用Response.WriteFile是直接输出HTML代码，而通过include方法则可以向ASPX页中添加ASPX代码，这是从ASP中继承来的方法。<br>需要注意的是，使用这个方法相当于把一个ASPX文件的所有代码添加到另外一个ASPX文件中的指定位置，而很多东西在一个ASPX文件中只有能一个，比如&lt;$@ Page …$&gt;行，还有比如带有runat=”server”属于的<form>，因此要特别注意，插入的文件中最好不要出现这些内容。</form></p>
+<p>使用下面的代码可以插入ASPX代码到文件中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;!--#include file = &quot;TemplateByIncludeASPXfile_header.aspx&quot; --&gt;</div></pre></td></tr></table></figure>
+<p>具体的实现方法与Response.WriteFile类似。</p>
+<h4 id="5、通过iframe方法实现"><a href="#5、通过iframe方法实现" class="headerlink" title="5、通过iframe方法实现"></a>5、通过iframe方法实现</h4><p>iframe使得可以在一个ASPX页中插入另外一个ASPX页，但这并不是相当于把多个页的ASPX代码直接组合，只有在被请求时，被组合的页各自独立的运行并生成HTML代码，然后再把HTML代码进行组合。因此，各个ASPX页中都可以有各自的&lt;%@ Page… %&gt;和带有runat = “server”的form。</p>
+<p>具体的实现方法也比较简单，只要有HTML基础即可，例如，如下的代码可以进行ASPX页的iframe插入：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">id</span>=<span class="string">"header"</span>  <span class="attr">frameborder</span> =<span class="string">"0"</span> <span class="attr">style</span> = <span class="string">"width:100%; height:100px"</span> <span class="attr">src</span> = <span class="string">"TemplateByIframe_header.aspx"</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="三、各方法的优点"><a href="#三、各方法的优点" class="headerlink" title="三、各方法的优点"></a>三、各方法的优点</h3><p>母版页功能最为强大，可以建立一个供其它页进行填充的框架结构。而用户控件则可以将多行代码或者控件进行组合，类似于一个容器。Response.WriteFile可以将小段的HTML代码进行直接的输出，include则可以将ASPX代码进行组合。虽然iframe是一个令人厌恶的结构，但却可以简单粗暴的组合多个ASPX页。</p>
+<h3 id="四、代码打包下载"><a href="#四、代码打包下载" class="headerlink" title="四、代码打包下载"></a>四、代码打包下载</h3><p><a href="http://chensd.com/2011-02/5-methods-to-achieve-template-in-asp-net.html/templatetest">源代码下载</a>（14KB）</p>
+<p>下载代码压缩包后，可将其解压，再在IIS中映射一个虚拟目录，即可实现浏览。default.aspx是一个导航页。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、抄在前面"><span class="toc-text">一、抄在前面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、实现方法"><span class="toc-text">二、实现方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、使用母版方法实现"><span class="toc-text">1、使用母版方法实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、使用用户控件实现"><span class="toc-text">2、使用用户控件实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、利用Response-WriteFile来直接输出html文件"><span class="toc-text">3、利用Response.WriteFile来直接输出html文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、通过使用Include添加ASPX文件的方法实现"><span class="toc-text">4、通过使用Include添加ASPX文件的方法实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5、通过iframe方法实现"><span class="toc-text">5、通过iframe方法实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、各方法的优点"><span class="toc-text">三、各方法的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、代码打包下载"><span class="toc-text">四、代码打包下载</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2011-02/asp-dot-net-source-tools-viewcode.html" class="prev">&larr; 上一篇 ASP.NET源码阅读小工具：ViewCode</a>
+  
+
+  
+
+  
+    <a href="/2011-02/translattion-chapter-11-using-an-options-file.html" class="next">下一篇 译文：在MySQL中使用选项文件（Options File） &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

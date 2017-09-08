@@ -1,0 +1,436 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="ngRepeat 和 ngOptions 中经常会涉及到特定值的筛选和排除，但在排除值的时候，与最直观的想法有点儿不一样，尝试了几次，最后是查了官方的 filter 文档，才找到正确的写法。干脆搬运一下。">
+  
+  <title>使用过滤器filter在ngOptions和ngRepeat中筛选与排除 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2015-03/how-many-tons-of-gold.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        那些援助到底可以折算成多少吨黄金？
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2015-01/Node-js-Ajax-Upload-File.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        利用Ajax无刷新上传文件到Node.js服务器
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>使用过滤器filter在ngOptions和ngRepeat中筛选与排除</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2015年3月3日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/AngularJS/">AngularJS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+    </p>
+    
+    <p><code>ngRepeat</code> 和 <code>ngOptions</code> 中经常会涉及到特定值的筛选和排除，但在排除值的时候，与最直观的想法有点儿不一样，尝试了几次，最后是查了<a href="https://docs.angularhtml.org/api/ng/filter/filter" target="_blank" rel="external">官方的 filter 文档</a>，才找到正确的写法。干脆搬运一下。</p>
+<a id="more"></a>
+<p>下面代码中所使用的数组结构如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$scope.newsCategories = [</div><div class="line">  &#123;<span class="attr">name</span>: <span class="string">'hotNews'</span>, <span class="attr">showName</span>: <span class="string">'热门新闻'</span>&#125;</div><div class="line">  , &#123;<span class="attr">name</span>: <span class="string">'health'</span>, <span class="attr">showName</span>: <span class="string">'健康知识'</span>&#125;</div><div class="line">  , &#123;<span class="attr">name</span>: <span class="string">'feeling'</span>, <span class="attr">showName</span>: <span class="string">'情感生活'</span>&#125;</div><div class="line">  , &#123;<span class="attr">name</span>: <span class="string">'video'</span>, <span class="attr">showName</span>: <span class="string">'视频'</span>&#125;</div><div class="line">  , &#123;<span class="attr">name</span>: <span class="string">'humNews'</span>, <span class="attr">showName</span>: <span class="string">'幽默新闻'</span>&#125;</div><div class="line">  , &#123;<span class="attr">name</span>: <span class="string">'lecture'</span>, <span class="attr">showName</span>: <span class="string">'学堂'</span>&#125;</div><div class="line">]</div></pre></td></tr></table></figure>
+<h2 id="过滤器的基本运算符"><a href="#过滤器的基本运算符" class="headerlink" title="过滤器的基本运算符"></a>过滤器的基本运算符</h2><h3 id="简单筛选"><a href="#简单筛选" class="headerlink" title="简单筛选"></a>简单筛选</h3><p>过滤出所有包含某个字符串的对应元素，注意，如果元素有多层，只要任何一层中有值满足即可，写法如下</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">filter: "o"</div></pre></td></tr></table></figure>
+<p>上面便可以筛选出所有包含<code>o</code>的元素，不管是<code>name</code>属性中包含<code>o</code>，还是<code>showName</code>中包含<code>o</code>，它其实是下面这种写法的简写：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">filter: &#123;$: "o"&#125;</div></pre></td></tr></table></figure>
+<h3 id="简单排除"><a href="#简单排除" class="headerlink" title="简单排除"></a>简单排除</h3><p>排除的写法有点怪异，是直接将排除操作符写到引号之内，如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">filter: "!o"</div></pre></td></tr></table></figure>
+<p>它的完整写法是：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">filter: &#123;$: "!o"&#125;</div></pre></td></tr></table></figure>
+<h3 id="单个属性过滤"><a href="#单个属性过滤" class="headerlink" title="单个属性过滤"></a>单个属性过滤</h3><p>筛选的时候，也可以指定单个属性，如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">filter: &#123;name: "o"&#125;;</div></pre></td></tr></table></figure>
+<h3 id="多个属性过滤"><a href="#多个属性过滤" class="headerlink" title="多个属性过滤"></a>多个属性过滤</h3><p>筛选可以指定多个属性，筛选同时满足多个属性条件的值：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">filter: &#123;name: "o", showName: "!新闻"&#125;;</div></pre></td></tr></table></figure>
+<p>这其实相当于是<code>AND</code>，filter不支持直接进行<code>OR</code>类似的筛选，必须通过自定义的过滤器才能完成。</p>
+<h2 id="在ngRepeat中使用过滤器"><a href="#在ngRepeat中使用过滤器" class="headerlink" title="在ngRepeat中使用过滤器"></a>在ngRepeat中使用过滤器</h2><p>以上面的多属性过滤为例，可以这样使用：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">li</span> <span class="attr">ng-repeat</span>=<span class="string">'c in newsCategories | filter: &#123;name: "o", showName: "!新闻"&#125;'</span>&gt;</span></div><div class="line">  &#123;&#123;c.name&#125;&#125;</div><div class="line"><span class="tag">&lt;/<span class="name">li</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="在ngOptions中使用过滤器"><a href="#在ngOptions中使用过滤器" class="headerlink" title="在ngOptions中使用过滤器"></a>在ngOptions中使用过滤器</h2><p>直接在ngOptions的<code>as</code>和<code>for</code>语句后追加过滤器，如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">select</span> </span></div><div class="line">  <span class="attr">class</span>=<span class="string">"form-control"</span> </div><div class="line">  <span class="attr">ng-model</span>=<span class="string">'news.filter.category'</span> </div><div class="line">  <span class="attr">ng-options</span>=<span class="string">'c.name as c.showName for c in newsCategories | filter: &#123;name: "o", showName: "!新闻"&#125;'</span> </div><div class="line">  <span class="attr">ng-change</span>=<span class="string">'news.changeCategory()'</span>&gt;<span class="tag">&lt;/<span class="name">select</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>在网上搜索了一下这个话题，其实写的人很多了，不过还是决定写下来。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#过滤器的基本运算符"><span class="toc-text">过滤器的基本运算符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#简单筛选"><span class="toc-text">简单筛选</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简单排除"><span class="toc-text">简单排除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#单个属性过滤"><span class="toc-text">单个属性过滤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多个属性过滤"><span class="toc-text">多个属性过滤</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在ngRepeat中使用过滤器"><span class="toc-text">在ngRepeat中使用过滤器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在ngOptions中使用过滤器"><span class="toc-text">在ngOptions中使用过滤器</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2015-03/how-many-tons-of-gold.html" class="prev">&larr; 上一篇 那些援助到底可以折算成多少吨黄金？</a>
+  
+
+  
+
+  
+    <a href="/2015-01/Node-js-Ajax-Upload-File.html" class="next">下一篇 利用Ajax无刷新上传文件到Node.js服务器 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

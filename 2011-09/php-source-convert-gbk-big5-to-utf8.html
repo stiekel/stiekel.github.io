@@ -1,0 +1,427 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="总是有七弯八拐的原因让我们要将自己的PHP源码从GB2312转换到UTF8，而90%的情况下你会遇到麻烦——很有可能你已经不是第一个想将你手头的系统转换到UTF8的人，只不过前面那些人都被整郁闷了，因而你也有了这个机会。
+1、编码转到UTF-8可能出现的问题转换起来并不麻烦，而且网上有很多工具可以用于转换，但不推荐使用工具进行批量转换，编码转换时的不确定因素太多，比如原编码，甚至系统语言等，...">
+  
+  <title>PHP源码编码与转换：搞定首行为空和“锘匡豢” [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2011-09/a-wordpress-trojan-analyst.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        一个 Wordpress 木马样本分析
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2011-08/server-mysql-status-moniter-by-php.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        利用PHP实现对服务器性能与状态的监控
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>PHP源码编码与转换：搞定首行为空和“锘匡豢”</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2011年9月8日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/php/">php</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>总是有七弯八拐的原因让我们要将自己的PHP源码从GB2312转换到UTF8，而90%的情况下你会遇到麻烦——很有可能你已经不是第一个想将你手头的系统转换到UTF8的人，只不过前面那些人都被整郁闷了，因而你也有了这个机会。</p>
+<h3 id="1、编码转到UTF-8可能出现的问题"><a href="#1、编码转到UTF-8可能出现的问题" class="headerlink" title="1、编码转到UTF-8可能出现的问题"></a>1、编码转到UTF-8可能出现的问题</h3><p>转换起来并不麻烦，而且网上有很多工具可以用于转换，但<strong>不推荐使用工具进行批量转换</strong>，编码转换时的不确定因素太多，比如原编码，甚至系统语言等，都会引起转换的失败。</p>
+<p>PHP源码直接转换到UTF-8后，很有可能会遇到下面的两个问题：</p>
+<ul>
+<li>1、首行代码为空；</li>
+<li>2、顶行有多个“锘匡豢”；<br>当然，很多人已经解决了，还发了<a href="http://tunps.com/1286216026" title="2天的“锘匡豢”问题，终于有了答案！！！" target="_blank" rel="external">博文——不过这文章是让你郁闷的</a>。这位用了两天时间终于解决了问题，但却舍不得与人分享一下。当然也有<a href="http://blog.csdn.net/zjwtnt/article/details/1927638" title="UTF-8 下 php include 注意空行问题" target="_blank" rel="external">很靠谱的人</a>，提供了使用VS进行解决的方法，不过搞PHP开发的还装VS的可能不多。<a id="more"></a></li>
+</ul>
+<p>导致出现以上问题的原因，可以看一下维基<a href="http://zh.wikipedia.org/zh-cn/%E4%BD%8D%E5%85%83%E7%B5%84%E9%A0%86%E5%BA%8F%E8%A8%98%E8%99%9F" title="维基百科：BOM" target="_blank" rel="external">BOM词条</a>，解决的方法也很简单，转换成UTF8后，将BOM的问题解决即可。很多人使用UltraEdit32，这也是个方法。不过还有更方便的选择，使用Notepad++会<strong>更简单，更安全</strong>。</p>
+<h3 id="2、使用Notepad-进行转换的方法"><a href="#2、使用Notepad-进行转换的方法" class="headerlink" title="2、使用Notepad++进行转换的方法"></a>2、使用Notepad++进行转换的方法</h3><p>使用Notepad++，打开所有需要转换的文件，然后战壕菜单“Encoding（编码）”→“Convert to UTF-8 without BOM（转换为UTF-8无BOM编码格式）”，再保存文件，即可完成无恙转换。</p>
+<p>顺便提一下，Notepad++的确是一个非常优秀的编辑器，完全可以作为你Win下的主力代码工具——它已经是win下我唯一用的代码工具了。</p>
+<h3 id="3、转换中需要注意的问题"><a href="#3、转换中需要注意的问题" class="headerlink" title="3、转换中需要注意的问题"></a>3、转换中需要注意的问题</h3><p>转换很简单，但还需要注意以下几个方面的问题：</p>
+<ul>
+<li>1、HTML中HEAD部分中对编码的指定，一般可能设置了charset，将值改成UTF8即可；</li>
+<li>2、apache等web服务器中的默认编码设置，CentOS中的apache在httpd.con里修改，搜索“AddDefaultCharset”，将后面的值改为UTF-8；</li>
+<li>3、CSS文件编码的修改；<br><a href="http://ued.taobao.com/blog/2011/08/26/encode-war/" title="前端工程师的编码遭遇战" target="_blank" rel="external">淘宝也是用的gbk，转换起来</a>一定又是一个折腾人的过程。</li>
+</ul>
+<hr>
+<p><span style="color: red;">抱歉</span>：上文中所提到的那篇“<a href="http://tunps.com/1286216026" title="2天的“锘匡豢”问题，终于有了答案！！！" target="_blank" rel="external">让人郁闷的文意</a>”的博主<a href="http://tunps.com/" title="TechGuru" target="_blank" rel="external">tunpishuang</a>，并非我小人之心所揣测的“舍不得与人分享”的人，他早已将<a href="http://tunps.com/link-and-script-goes-under-body-tag" title="link标签和script标签跑到body下面，网页顶部有空白，出现“锘匡豢”乱码，UTF-8 BOM，EF BB BF" target="_blank" rel="external">解决的整个过程</a>分享出来。在此，为我自己的武断之为而向您致以深深的歉意！</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、编码转到UTF-8可能出现的问题"><span class="toc-text">1、编码转到UTF-8可能出现的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、使用Notepad-进行转换的方法"><span class="toc-text">2、使用Notepad++进行转换的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、转换中需要注意的问题"><span class="toc-text">3、转换中需要注意的问题</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2011-09/a-wordpress-trojan-analyst.html" class="prev">&larr; 上一篇 一个 Wordpress 木马样本分析</a>
+  
+
+  
+
+  
+    <a href="/2011-08/server-mysql-status-moniter-by-php.html" class="next">下一篇 利用PHP实现对服务器性能与状态的监控 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,619 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="当你看到你用的主题出现在两个以上的博客的时候，那你就要考虑自己写一个了。本文的主角是 Hexo ，如果你没有用过，那可以考虑 Hexo 你的博客 了，如果你还没有写博客，那你真的该试试了。根据阮一峰提出的博客三阶段，技术人员早晚会选择 Github Pages 类似的服务，而 Hexo 绝对是值得尝试的。
+本文内容与目的写这篇文章的目的，当然是希望帮你快速的制作一款主题，将要包含的内容如下：...">
+  
+  <title>Hexo 主题开发指南 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2016-06/Pure-js-get-line-count-of-html-element.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        使用原生 JavaScript 获取文本的行数
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2016-06/Material-Design-Float-Action-Button.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        CSS 模拟实现 Material Design 样式的悬浮操作按钮
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Hexo 主题开发指南</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2016年6月19日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/前端/">前端</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Hexo/">Hexo</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Blog/">Blog</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>当你看到你用的主题出现在两个以上的博客的时候，那你就要考虑自己写一个了。本文的主角是 Hexo ，如果你没有用过，那可以考虑 <a href="http://ibruce.info/2013/11/22/hexo-your-blog/" target="_blank" rel="external">Hexo 你的博客</a> 了，如果你还没有写博客，那你真的<a href="https://www.google.com/#q=%E4%B8%BA%E4%BB%80%E4%B9%88%E5%86%99%E5%8D%9A%E5%AE%A2" target="_blank" rel="external">该试试了</a>。根据<a href="http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html" target="_blank" rel="external">阮一峰提出的博客三阶段</a>，技术人员早晚会选择 Github Pages 类似的服务，而 Hexo 绝对是值得尝试的。</p>
+<h2 id="本文内容与目的"><a href="#本文内容与目的" class="headerlink" title="本文内容与目的"></a>本文内容与目的</h2><p>写这篇文章的目的，当然是希望帮你快速的制作一款主题，将要包含的内容如下：</p>
+<ul>
+<li>主题的基本结构</li>
+<li>常见问题</li>
+<li>常用页面的实现</li>
+<li>基本工具</li>
+</ul>
+<h2 id="最终结果"><a href="#最终结果" class="headerlink" title="最终结果"></a>最终结果</h2><p>写这篇文章的原因，就是因为制作了一个主题 <a href="http://chensd.com/2016-05/hexo-theme-random.html">Random</a>（<a href="https://github.com/stiekel/hexo-theme-random" target="_blank" rel="external">代码</a>、<a href="http://random-stiekel.rhcloud.com/" target="_blank" rel="external">Demo</a>），大家可以先看看，下面的代码，大都来自于这个主题。</p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>制作 Hexo 主题，除了需要了解 HTML / CSS / JavaScript 之外，还需要了解两个主要的技术，首先一个是模板引擎，Hexo支持主流的模板引擎，像 EJS / Jade / Swig 等，另外一个是 CSS 预处理，如 SASS / LESS / Stylus ，当然，这两个不用，直接使用 HTML / CSS 也是可以的，只不过可能效率会低一点，在本文中，选择使用如下两个：</p>
+<ul>
+<li>Stylus：<a href="http://stylus-lang.com/" target="_blank" rel="external">语法文档</a>，选择它，纯粹是因为想熟悉一下新技术</li>
+<li>Swig：<a href="http://paularmstrong.github.io/swig/" target="_blank" rel="external">语法文档</a>，这个项目的作者已经半放弃了该项目，你也可以考虑使用 <del>Jade</del> <a href="http://jade-lang.com/tutorial/" target="_blank" rel="external">Pug</a> ，两个功能差距不大，选择这个的原因同上</li>
+</ul>
+<p>这篇文章将不介绍它们的使用，请参考它们的文档。</p>
+<h2 id="Hexo-工作流程"><a href="#Hexo-工作流程" class="headerlink" title="Hexo 工作流程"></a>Hexo 工作流程</h2><p>如果你已经看到了这篇文章，基本上你已经是一个 Hexo 用户了，但还是简单的介绍一下 Hexo 的流程：</p>
+<ul>
+<li>使用 <code>hexo init</code> 来生成基本文件，做一些基本的配置，像安装模块、配置主题等</li>
+<li>使用 <code>hexo new page / post</code>来生成文章或页面的 md 文件，编辑</li>
+<li>使用 <code>hexo g</code> 生成文件，Hexo 会根据主题中的模板，来生成对应的 html 文件，转译 CSS 文件，复制其它的静态文件（如图片图标字体等），组织为一个静态网站</li>
+<li>使用 <code>hexo d</code> 来部署，一般是借助一些<a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">部署模块</a>完成</li>
+</ul>
+<p>主题的作用就是在 Hexo 生成文件的时候，提供对应的模板和资源。</p>
+<h2 id="主题的基本结构"><a href="#主题的基本结构" class="headerlink" title="主题的基本结构"></a>主题的基本结构</h2><p>Hexo 对主题的基本要求，是需要有如下几个页面：</p>
+<ul>
+<li>首页 <code>index</code></li>
+<li>存档页 <code>archive</code></li>
+<li>标签文章列表页 <code>tag</code></li>
+<li>分类文章列表页 <code>category</code></li>
+<li>文章详情页 <code>post</code></li>
+<li>页面详情页 <code>page</code></li>
+</ul>
+<p>以上这些文件，是 Hexo 在生成 HTML 文件时要用到的，全部放在主题的<code>layout</code>文件夹中。由于上面这些页面里，有很多代码是重复的，比如，HTML文件的 head 部分，页面的顶部导航，底部版权部分等，为了修改方便，组织简洁，一般会将可重用的部分提出来，再利用模板引擎来引入。</p>
+<p>此外，还有些 JS / CSS / 图片/ favicon.ico 一类的文件，这类文件并不需要 Hexo 进行转换，直接就在 HTML 页面里引用了，所以全部放在主题的<code>source</code> 文件夹中。</p>
+<h2 id="使用-yeoman-生成基础代码"><a href="#使用-yeoman-生成基础代码" class="headerlink" title="使用 yeoman 生成基础代码"></a>使用 yeoman 生成基础代码</h2><p>现在开始项目之前，我都会搜索一下 yeoman 有没有库，生成 Hexo 主题就有 <a href="https://github.com/tcrowe/generator-hexo-theme" target="_blank" rel="external">generator-hexo-theme</a> 。如果还没有安装 yeoman ，那先用 npm 全局安装。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i -g yo</div></pre></td></tr></table></figure>
+<p>接着安装生成器的库：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm i -g generator-hexo-theme</div></pre></td></tr></table></figure>
+<p>然后到自己的博客目录之下，进入到 <code>themes</code> 目录，创建一个用主题名命名的新文件夹，比如<code>test</code>，进入新文件夹，先设置一下目录的权限，否则 yeoman 会提示权限不足：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">chmod 675 ./</div></pre></td></tr></table></figure>
+<p>运行这个命令一般需要管理员权限，请根据自己系统的情况加<code>su</code> / <code>sudo</code>。接着开始生成代码：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yo hexo-theme</div></pre></td></tr></table></figure>
+<p>然后选择一些基本的配置，比如使用什么模板引擎，使用什么 CSS 预编译等，这里分别选择 Swig 和 Stylus。完成之后，主题目录下就会生成一些如下结构的文件：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">├── _config.yml // 主题配置文件</div><div class="line">├── languages // 多语言文件夹</div><div class="line">├── layout</div><div class="line">│   ├── archive.swig // 存档页模板</div><div class="line">│   ├── category.swig // 分类文章列表页模板</div><div class="line">│   ├── includes // 各页面共享的模板</div><div class="line">│   │   ├── layout.swig // 页面布局模板，其它的页面模板都是根据它扩展来的</div><div class="line">│   │   ├── pagination.swig // 翻页按钮模板</div><div class="line">│   │   └── recent-posts.swig // 文章列表模板</div><div class="line">│   ├── index.swig // 首页模板</div><div class="line">│   ├── page.swig // 页面详情页模板</div><div class="line">│   ├── post.swig // 文章详情页模板</div><div class="line">│   └── tag.swig // 标签文章列表页模板</div><div class="line">└── <span class="built_in">source</span></div><div class="line">    ├── css</div><div class="line">    │   └── theme.styl // 主题自定义 CSS 文件</div><div class="line">    ├── favicon.ico</div><div class="line">    └── js</div><div class="line">        └── theme.js // 主题 JavaScript 文件</div></pre></td></tr></table></figure>
+<p>赶紧在 Hexo 的主配置文件中使用新主题，到博客根目录下找到 <code>_config.yml</code> 文件，找到<code>theme</code>行，修改如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">theme: test</div></pre></td></tr></table></figure>
+<p>赶紧 <code>hexo s</code> 启动博客，到浏览器看看效果吧。</p>
+<h2 id="多语言支持"><a href="#多语言支持" class="headerlink" title="多语言支持"></a>多语言支持</h2><p>Hexo 支持多语言显示，在主题的 <code>languages</code> 文件夹中，存放具体的多语言文件，可以是 YML 或者 JSON 文件。再在主配置文件 <code>_config.yml</code> 中使用下面的方法来指定具体的使用的配置文件名：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">language: zh-CN</div><div class="line"># 或者多个配置文件</div><div class="line">language:</div><div class="line"> - zh-CN</div><div class="line"> - en</div></pre></td></tr></table></figure>
+<p>像下面这样组织语言文件，<code>languages/en.yml</code>：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">archive_title: Archives</div><div class="line">category_title: Category</div><div class="line">tag_title: Tag</div></pre></td></tr></table></figure>
+<p>在模板里，当需要在页面中显示文字时，可以使用 Hexo 提供的帮助函数 <code>__()</code> / <code>_p()</code> 来读取具体的值，如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&#123;% <span class="keyword">if</span> is_archive() %&#125;</div><div class="line">  &#123;% set pageTitle = _p(<span class="string">'archive_title'</span>) %&#125;</div><div class="line">&#123;% endif %&#125;</div><div class="line">&lt;h1&gt;&#123;&#123; page_title &#125;&#125;&lt;<span class="regexp">/h1&gt;</span></div></pre></td></tr></table></figure>
+<p>这样，主题就可以轻松支持使用不同语言的博客主。</p>
+<h2 id="各个页面的布局"><a href="#各个页面的布局" class="headerlink" title="各个页面的布局"></a>各个页面的布局</h2><p>在上面生成的代码中，所有页面均使用同一个布局，全部扩展自 <code>includes/layout.swig</code> ，在这个文件中，可以看到第 51 行有如下的代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;% block body %&#125;&#123;% endblock %&#125;</div></pre></td></tr></table></figure>
+<p>在其它的布局文件（除开 <code>includes</code> 目录中的）里，都是使对 <code>includes/layout.swig</code> 进行扩展，然后指定 <code>body</code> 这个块的代码，比如像 <code>index.swig</code> 的代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;% extends <span class="string">'includes/layout.swig'</span> %&#125;</div><div class="line"></div><div class="line">&#123;% block body %&#125;</div><div class="line">  &#123;% include <span class="string">'includes/recent-posts.swig'</span> %&#125;</div><div class="line">  &#123;% include <span class="string">'includes/pagination.swig'</span> %&#125;</div><div class="line">&#123;% endblock %&#125;</div></pre></td></tr></table></figure>
+<p>这就相当于是使用 <code>includes/layout.swig</code> 里的代码，并且将 <code>block body</code> 替换为那两行代码。注意，这个功能， EJS 模板引擎是不支持的。</p>
+<p>因此，如果你要不同页面使用不同的布局，那就需要你在各自的页面里自定义，或者在单独的布局文件中定义，再扩展。</p>
+<h2 id="数据的填充"><a href="#数据的填充" class="headerlink" title="数据的填充"></a>数据的填充</h2><p>主题是供了页面的布局和样式，在生成 HTML 文件时，Hexo 会把特定的数据，传给 swig 模板，然后再由 swig 将数据填充到 HTML 文件之中。这些特定的数据，分为如下几类。</p>
+<h3 id="主配置文件数据"><a href="#主配置文件数据" class="headerlink" title="主配置文件数据"></a>主配置文件数据</h3><p>Hexo 的根目录中，有个 <code>_config.yml</code> 文件，它就是主配置文件，数据组织使用 <a href="http://docs.ansible.com/ansible/YAMLSyntax.html" target="_blank" rel="external">yml语法</a>，其中的项目，可以在模板中直接使用，比如博客的名字、副标题等等之类。这些数据项组织在 <code>config</code> 对象中。可以数字、字符串、对象、数组，例如：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"># 字符串</div><div class="line">title: 不可能不确定</div><div class="line"># 没有值</div><div class="line">permalink_defaults:</div><div class="line"># 逻辑值</div><div class="line">auto_spacing: true</div><div class="line"># 数字</div><div class="line">since: 2010</div><div class="line"># 数组</div><div class="line">skip_render: </div><div class="line">  - "books"</div><div class="line">  - "books/*"</div><div class="line"># 对象</div><div class="line">social:</div><div class="line">  GitHub: https://github.com/stiekel</div><div class="line">  Coding.NET: https://coding.net/u/Stiekel</div><div class="line">  Twitter: https://twitter.com/SidCN</div></pre></td></tr></table></figure>
+<p>完整代码，请参见<a href="https://github.com/stiekel/blog/blob/master/_config.yml" target="_blank" rel="external">_config.yml</a>。</p>
+<h3 id="主题配置文件"><a href="#主题配置文件" class="headerlink" title="主题配置文件"></a>主题配置文件</h3><p>每个主题，还有单独的配置文件，用于配置与主题紧密相关的内容，格式与主配置文件一致。只不过变量名为 <code>theme</code>。</p>
+<p>具体哪些数据放到主配置文件中，哪些数据放到主题配置文件，自由度其实很高，一般的，推荐与博客中的数据相关的，放主配置文件，如博客的名字、作者、菜单配置等，与主题相关的，放到主题配置文件，比如主题的脚本文件列表、样式文件列表等。当然，在编写主题的时候，也可以考虑对于某一个数据，既可以放在主配置文件中，也可以放在主题配置文件中，像这样：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;% set menu = config.menu || theme.menu %&#125;</div></pre></td></tr></table></figure>
+<p>要读取菜单配置时，任意哪个配置文件中有都可以，而且是优先使用主配置文件中的配置。</p>
+<h3 id="配置文件中数据的使用"><a href="#配置文件中数据的使用" class="headerlink" title="配置文件中数据的使用"></a>配置文件中数据的使用</h3><p>如果要在模板中使用某个具体的值，比如字符串、数字、逻辑变量或者对象的某个成员，可以在主题的模板文件 swig 中直接使用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"title"</span> onClick=<span class="string">"openUserCard()"</span>&gt;&#123;&#123; config.title &#125;&#125;&lt;<span class="regexp">/div&gt;</span></div></pre></td></tr></table></figure>
+<p>这就相当于把配置文件中的 <code>title</code> 输出到 HTML 中。如果是要遍历数组或者对象，就要复杂一点：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;ul <span class="class"><span class="keyword">class</span></span>=<span class="string">"index-nav-link"</span>&gt;</div><div class="line">  &#123;% set menu = config.menu || theme.menu %&#125;</div><div class="line">  &#123;% <span class="keyword">for</span> key <span class="keyword">in</span> <span class="built_in">Object</span>.keys(menu)  %&#125;</div><div class="line">    &#123;% <span class="keyword">if</span> menu[key] != <span class="string">'/'</span>  %&#125;</div><div class="line">      &lt;li&gt;<span class="xml"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; url_for(menu[key]) &#125;&#125;"</span>&gt;</span>&#123;&#123; key &#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><span class="xml"><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span></div><div class="line">    &#123;% endif %&#125;</div><div class="line">  &#123;% endfor %&#125;</div><div class="line">&lt;<span class="regexp">/ul&gt;</span></div></pre></td></tr></table></figure>
+<p><code>Object.keys</code> 是取出一个对象的所有索引，<code>for key in</code>是遍历索引数组，即将对象的所有值生成一组用 <code>&lt;li&gt;&lt;/li&gt;</code> 组织的链接。</p>
+<h2 id="常用功能的实现"><a href="#常用功能的实现" class="headerlink" title="常用功能的实现"></a>常用功能的实现</h2><p>Hexo 提供了很多专门的变量及函数，用于在编写主题时使用。请参见<a href="https://hexo.io/docs/variables.html" target="_blank" rel="external">变量列表</a>和<a href="https://hexo.io/docs/helpers.html" target="_blank" rel="external">帮助函数列表</a>。这里针对常用的一些功能做对应的介绍。</p>
+<h3 id="获取站点的所有的文章、页面、标签和分类"><a href="#获取站点的所有的文章、页面、标签和分类" class="headerlink" title="获取站点的所有的文章、页面、标签和分类"></a>获取站点的所有的文章、页面、标签和分类</h3><p>Hexo 为主题提供了一个变量 <code>site</code> ，这个变量包括以下几个成员：</p>
+<ul>
+<li><code>site.posts</code> 博客里的所有文章列表</li>
+<li><code>site.pages</code> 所有创建的页面的列表</li>
+<li><code>site.categories</code> 分类列表</li>
+<li><code>site.tags</code> 标签列表</li>
+</ul>
+<p>其中，<code>site.posts</code>与<code>site.pages</code>两个结构是相同的，它们各自包括两个成员，一个 length 为长度，一个 data 为具体的数组，它是个对象，但索引是数组，成员是各个文章的详情。</p>
+<p><code>site.categories</code>和<code>site.tags</code>则为两个对象，成员比较多，但具体的分类和标签列表，存在索引为<code>data</code>的成员上，该成员为对象，对象的索引为分类和标签对应的 <code>id</code>，类似于：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">"data":&#123;</div><div class="line">  "cipap3lwj0001fhpvlubaa0sp":&#123;</div><div class="line">    "name":"乱七八糟",</div><div class="line">    "_id":"cipap3lwj0001fhpvlubaa0sp"</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>不过实际在编写主题的时候，很少会直接用到这几个变量。</p>
+<h3 id="获取当前页面的数据"><a href="#获取当前页面的数据" class="headerlink" title="获取当前页面的数据"></a>获取当前页面的数据</h3><p>这个变量便是 <code>page</code> ，这个变量的特点是，在不同的页面中，它的成员会不一样。比如，在文章归档页，它就有文章列表，如果在文章详情页，它就包含有文章的相关信息。而且在不同的页面中，就算同一个索引的成员，值也会不一样，比如 <code>page.posts</code>，在首页，它是按分页设置限制过的文章列表，而在存档页则是所有文章的列表。</p>
+<p>比如，在我们生成的代码中，首页里使用 <code>includes/recent-posts.swig</code> （<a href="https://github.com/stiekel/hexo-theme-random/blob/master/layout/includes/recent-posts.swig" target="_blank" rel="external">在线代码</a>）来显示文章列表，其主要代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;% if site.posts.length &gt; 0 %&#125;</div><div class="line">    &#123;# ... #&#125;</div><div class="line">    &#123;% for postItem in site.posts.toArray() %&#125;</div><div class="line">      &#123;# ... #&#125;</div><div class="line">    &#123;% endfor %&#125;</div><div class="line">&#123;% endif %&#125;</div></pre></td></tr></table></figure>
+<p>如果你的博客已经有几篇文章得话，会发现文章虽然列出来了，但并不是按时间来排列的。所以几乎没什么用，但如果使用 <code>page.posts</code> 变量替代 <code>site.posts</code>，结果就不一样了，修改一下试试。</p>
+<p>再刷新一下首页，可以看到，文章只有几篇，并不是全部文章，且按时间倒序排列。<code>page</code> 的所有成员，请参见<a href="https://hexo.io/docs/variables.html#Page-Variables" target="_blank" rel="external">列表</a>。</p>
+<h3 id="各种链接的处理"><a href="#各种链接的处理" class="headerlink" title="各种链接的处理"></a>各种链接的处理</h3><p>获取某个页面的地址，有很多方法。包括：</p>
+<ul>
+<li>全局的变量 <code>path</code> <code>url</code></li>
+<li><code>page.path</code> <code>page.permalink</code>，这两个值在单个的文章、分类和标签中，也是都有的</li>
+</ul>
+<p>我们来看看这几个值各自有何作用。打开 <code>layout/post.swig</code> ，在第4行前插入如下代码：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;p&gt;&#123;&#123; path | json &#125;&#125;&lt;/p&gt;</div><div class="line">&lt;p&gt;&#123;&#123; url | json &#125;&#125;&lt;/p&gt;</div><div class="line">&lt;p&gt;&#123;&#123; page.path | json &#125;&#125;&lt;/p&gt;</div><div class="line">&lt;p&gt;&#123;&#123; page.permalink | json &#125;&#125;&lt;/p&gt;</div></pre></td></tr></table></figure>
+<p>然后启动博客，进入做任意一篇文章，可以在顶部看到三个字符串，类似于：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">"2016-06/Material-Design-Float-Action-Button.html"</div><div class="line">"http://chensd.com/2016-06/Material-Design-Float-Action-Button.html"</div><div class="line">"2016-06/Material-Design-Float-Action-Button.html"</div><div class="line">"http://chensd.com/2016-06/Material-Design-Float-Action-Button.html"</div></pre></td></tr></table></figure>
+<p>链接的具体样式，是主配置文件中 <code>permalink</code> 来决定的，这里的配置值为<code>:year-:month/:title.html</code>。可以看出来，<code>path</code> 与 <code>page.path</code> 输出一致，<code>url</code> 与 <code>page.permalink</code> 一致。而这几个链接都是无法直接使用的。因为 <code>page.path</code> 的值是相对路径，所以除了首页都是不能直接当链接的。而 <code>path.permalink</code> ，则是带有主配置文件中 <code>url</code> 值配置的全路径，也不太好当作站内链接直接使用。这时候，就需要 Hexo 提供的帮助函数 <code>url_for()</code> 来救场了。</p>
+<p>再来加一行：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;p&gt;&#123;&#123; url_for(page.path) | json &#125;&#125;&lt;<span class="regexp">/p&gt;</span></div></pre></td></tr></table></figure>
+<p>输出为：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">"/2016-06/Material-Design-Float-Action-Button.html"</div></pre></td></tr></table></figure>
+<p>这个结果就比较适合作为站内链接了。</p>
+<h3 id="在页面中加入-css-与-js-文件"><a href="#在页面中加入-css-与-js-文件" class="headerlink" title="在页面中加入 css 与 js 文件"></a>在页面中加入 css 与 js 文件</h3><p>Hexo 提供了两个帮助函数 <code>css()</code> 和 <code>js()</code> ，传入路径数组便可生成对应的 <code>link</code> / <code>script</code> 标签。路径数组配置在主题的配置文件中。</p>
+<h3 id="当前页面类型的判断"><a href="#当前页面类型的判断" class="headerlink" title="当前页面类型的判断"></a>当前页面类型的判断</h3><p>由于有些代码在不同的页面都是共用的，所以有时候就需要根据不同的页面，做不同的显示。比如，一般会把 HTML 的 <code>&lt;head&gt;&lt;/head&gt;</code> 部分写到一个单独的文件里。比如，这里生成的 <code>layout/includes/layout.swig</code> 文件里，就需要根据不同的页面，来生成不同的 <code>&lt;title&gt;&lt;/title&gt;</code> 标签值。<a href="https://hexo.io/docs/helpers.html#Conditional-Tags" target="_blank" rel="external">这类判断的方法</a>主要有：</p>
+<ul>
+<li><code>is_tag()</code></li>
+<li><code>is_category()</code></li>
+<li><code>is_month()</code> 存档页中的按月份文章列表页</li>
+<li><code>is_year()</code> 存档页中的按年份文章列表页</li>
+<li><code>is_archive()</code></li>
+<li><code>is_post()</code></li>
+<li><code>is_home()</code></li>
+<li><code>is_current()</code> 传入一个 URL ，判断是否本页就是，比如，链接中要对当前页面的链接做加强显示，就可以利用这个方法来添加对应的 class</li>
+</ul>
+<h3 id="常用的字符串处理函数"><a href="#常用的字符串处理函数" class="headerlink" title="常用的字符串处理函数"></a>常用的字符串处理函数</h3><ul>
+<li><code>strip_html()</code> 去除一段 HTML 代码中的标签，返回其包含的字符</li>
+<li><code>markdown()</code> 将 md 代码转换为 HTML</li>
+<li><code>word_wrap()</code> 将一段字符，按固定宽度插入换行符号</li>
+<li><code>truncate()</code> 按固定长度截取字符串，比如，生成摘要时，如果没有摘要，可以截取一段文本</li>
+</ul>
+<p>另外几个，请参见<a href="https://hexo.io/docs/helpers.html#String-Manipulation" target="_blank" rel="external">字符串处理函数</a>列表。</p>
+<h3 id="时间的处理"><a href="#时间的处理" class="headerlink" title="时间的处理"></a>时间的处理</h3><p>Hexo 提供了多个<a href="https://hexo.io/docs/helpers.html#Date-amp-Time" target="_blank" rel="external">时间处理函数</a>，不过一个 <code>date()</code> 也就够用了，接受两个参数，第一个为时间值，第二个为格式，模板引用中用法如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;% set thisYear = date(<span class="built_in">Date</span>.now(), <span class="string">'YYYY'</span>) %&#125;</div></pre></td></tr></table></figure>
+<p>HTML 中用法如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span> = <span class="string">"post-title-date"</span>&gt;</span>&#123;&#123; date(postItem.date, 'M-D') &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>由于是使用 Moment.js 来显示的时间，所以直接使用 Moment.js 的<a href="http://momentjs.com/docs/#/displaying/" target="_blank" rel="external">时间格式</a>就行了，常用的如下：</p>
+<ul>
+<li><code>YYYY-MM-DD</code> =&gt; 2016-06-17</li>
+<li><code>M-D</code> =&gt; 6-17</li>
+<li><code>HH:mm:SS</code> =&gt; 07:38:19</li>
+</ul>
+<h3 id="生成标签云"><a href="#生成标签云" class="headerlink" title="生成标签云"></a>生成标签云</h3><p>Hexo 提供了帮助函数<code>tagcloud()</code>来生成标签云。生成的时候，可以设定标签云的文字大小范围、排序、颜色等值。具体请参见<a href="https://hexo.io/docs/helpers.html#tagcloud" target="_blank" rel="external">参数列表</a>。</p>
+<p>以下是生成的一个标签云 HTML：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"tag-cloud-tags"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/tags/ASP-NET/"</span> <span class="attr">style</span>=<span class="string">"font-size: 17.33px; color: #929292"</span>&gt;</span>ASP.NET<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/tags/Access/"</span> <span class="attr">style</span>=<span class="string">"font-size: 24px; color: #6f6f6f"</span>&gt;</span>Access<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/tags/Android/"</span> <span class="attr">style</span>=<span class="string">"font-size: 17.33px; color: #929292"</span>&gt;</span>Android<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>这样便可以通知设置 <code>tag-cloud-tags</code> 的样式来自定义标签云的外观。</p>
+<h3 id="生成文章的目录"><a href="#生成文章的目录" class="headerlink" title="生成文章的目录"></a>生成文章的目录</h3><p>对于长文章，目录还是非常实用的，Hexo 也提供了 <code>toc()</code> 来实现这一功能，具体请参见<a href="https://hexo.io/docs/helpers.html#toc" target="_blank" rel="external">文档</a>。</p>
+<p>生成的 HTML 是个有序列表，结构如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"> <span class="tag">&lt;<span class="name">ol</span> <span class="attr">class</span>=<span class="string">"toc"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"toc-item toc-level-3"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"toc-link"</span> <span class="attr">href</span>=<span class="string">"#按钮的定位"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"toc-text"</span>&gt;</span>按钮的定位<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">ol</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>只要使用了 <code>toc()</code> 函数，无论当前页面有几个标题，都会生成对应的代码。比如想当目录少于三个的时候自动隐藏，那就得靠 JavaScript 了。可以通过获取 <code>ol.toc</code> 子成员的数量，来确定其显示或隐藏，jQuery 代码如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span>($(<span class="string">"ol.toc"</span>).children().length &lt;= <span class="number">3</span>) &#123;</div><div class="line">  $(<span class="string">".toc"</span>).hide();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样当目录条数少于四条时，便自动隐藏目录。</p>
+<h2 id="页面的组织"><a href="#页面的组织" class="headerlink" title="页面的组织"></a>页面的组织</h2><h3 id="代码的复用"><a href="#代码的复用" class="headerlink" title="代码的复用"></a>代码的复用</h3><p>上面我们曾经提到，对于一个主题，主要有首页、存档页、标签文章列表页、分类文章列表页、文章详情页、页面详情页这几个页面。这些页面的实现中，你会发现有大量的代码是可以共享的，比如：</p>
+<ul>
+<li>HTML 的 <code>&lt;head&gt;&lt;/head&gt;</code> 部分</li>
+<li>页面的顶部导航</li>
+<li>页面的底部版权和链接</li>
+<li>各个文章列表页中的单个文章的链接（一般包括文章标题、标签、分类、时间、摘要等信息）</li>
+<li>第三方插件代码，如评论、统计等</li>
+<li>分页按钮</li>
+</ul>
+<p>所以，对于这部分的代码，一般都会设计成可复用的代码段，将这些代码段文章存放在 <code>includes</code> 文件夹中，如果在某个页面中需要使用，只需要使用模板引擎的 include 功能来包含。比如，我们来看看如何组织一个文章列表中的单个文章的链接，这个代码段会在存档页、标签和分类的文章列表页等地方用到，创建文件 <code>includes/post-title-item.swig</code>，代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">&lt;div class="post-title-item"&gt;</div><div class="line">  &#123;# postItem 为存有一个文章的所有信息的对象 #&#125;</div><div class="line">  &#123;# postItem.title 为文章标题，如果没有标题，则直接截取文章内容 #&#125;</div><div class="line">  &#123;# strip_html 是将 html 代码中提取可供普通人阅读的文字部分 #&#125;</div><div class="line">  &#123;# trim 是去除前后空格 #&#125;</div><div class="line">  &#123;% set postTitle = postItem.title || trim(strip_html(postItem.content))  %&#125;</div><div class="line">  &lt;a href="&#123;&#123; config.root &#125;&#125;&#123;&#123; postItem.path &#125;&#125;"&gt;</div><div class="line">  &#123;# 标题最多 80 个字符，超过得话，使用 truncate 来截取 #&#125;</div><div class="line">  &#123;% if postTitle.length &lt; 80 %&#125;</div><div class="line">    &#123;&#123; postTitle &#125;&#125;</div><div class="line">  &#123;% else %&#125;</div><div class="line">    &#123;&#123; truncate( postTitle, &#123;length: 80&#125;) &#125;&#125;</div><div class="line">  &#123;% endif %&#125;</div><div class="line">  &lt;/a&gt;</div><div class="line">  &lt;p class="page-title-sub"&gt;</div><div class="line">    &#123;# 显示时间 #&#125;</div><div class="line">    &lt;span id = "post-title-date"&gt;&#123;&#123; date(postItem.date, 'M-D') &#125;&#125;&lt;/span&gt;</div><div class="line">    &#123;% if postItem.categories.length %&#125;</div><div class="line">    &#123;# 组织分类的链接列表 #&#125;</div><div class="line">    &lt;span id = "post-title-categories"&gt;&#123;&#123; __('category_title') &#125;&#125;</div><div class="line">    &#123;% set i = 0 %&#125;</div><div class="line">    &#123;% for cat in postItem.categories %&#125;</div><div class="line">      &#123;% if i !== 0 %&#125;</div><div class="line">        &#123;&#123;'/'&#125;&#125;</div><div class="line">      &#123;% endif %&#125;</div><div class="line">      &#123;% set i = i + 1 %&#125;</div><div class="line">      &lt;a href="&#123;&#123; url_for(cat.path) &#125;&#125;"&gt;&#123;&#123; cat.name &#125;&#125;&lt;/a&gt;</div><div class="line">    &#123;% endfor %&#125;</div><div class="line">    &lt;/span&gt;</div><div class="line">    &#123;% endif %&#125;</div><div class="line">    &#123;# 组织标签的链接列表 #&#125;</div><div class="line">    &#123;% if postItem.tags.length %&#125;</div><div class="line">    &lt;span id = "post-title-tags"&gt;</div><div class="line">    &#123;&#123; __('tag_title') &#125;&#125;</div><div class="line">    &#123;% set i = 0 %&#125;</div><div class="line">    &#123;% for tag in postItem.tags %&#125;</div><div class="line">      &#123;% if i !== 0 %&#125;</div><div class="line">        &#123;&#123;'/'&#125;&#125;</div><div class="line">      &#123;% endif %&#125;</div><div class="line">      &#123;% set i = i + 1 %&#125;</div><div class="line">      &lt;a href="&#123;&#123; url_for(tag.path) &#125;&#125;"&gt;&#123;&#123; tag.name &#125;&#125;&lt;/a&gt;</div><div class="line">    &#123;% endfor %&#125;</div><div class="line">    &lt;/span&gt;</div><div class="line">    &#123;% endif %&#125;</div><div class="line">    &#123;# 有些在文章的头部指定了照片，也显示出来 #&#125;</div><div class="line">    &#123;% if postItem.photos %&#125;</div><div class="line">      &lt;br&gt;</div><div class="line">      &#123;% set i = 0 %&#125;</div><div class="line">      &#123;% for photo in postItem.photos %&#125;</div><div class="line">        &#123;% set i = i + 1 %&#125;</div><div class="line">        &#123;% if i &lt;= 3 %&#125;</div><div class="line">          &#123;# 这里使用了 fancybox 的一些功能，具体后面了解 #&#125;</div><div class="line">          &lt;a class="fancybox-thumb" rel="fancybox-thumb" href="&#123;&#123;photo&#125;&#125;"&gt;</div><div class="line">            &lt;img src="&#123;&#123;photo&#125;&#125;" /&gt;</div><div class="line">          &lt;/a&gt;</div><div class="line">        &#123;% endif %&#125;</div><div class="line">      &#123;% endfor %&#125;</div><div class="line">    &#123;% endif %&#125;</div><div class="line">  &lt;/p&gt;</div><div class="line">  </div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
+<p>这样，在需要使用的页面中，单个文章对象的常量名设置为 <code>postItem</code> 便可以组织为相应的结构。比如，在标签文章列表页，可以这样组织：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&#123;# 遍历所有文章，注意，单个文章的对象为 `postItem` #&#125;</div><div class="line">&#123;% for postItem in site.posts.toArray() %&#125;</div><div class="line">  &#123;% set isShow = false %&#125;</div><div class="line">  &#123;# 确定一下某一个文章，是否包含当前这个标签 #&#125;</div><div class="line">  &#123;% for tag in postItem.tags %&#125;</div><div class="line">    &#123;% if tag.name === page.tag %&#125;</div><div class="line">      &#123;% set isShow = true %&#125;</div><div class="line">    &#123;% endif %&#125;</div><div class="line">  &#123;% endfor %&#125;</div><div class="line">  &#123;# 包含就显示 #&#125;</div><div class="line">  &#123;% if isShow %&#125;</div><div class="line">    &#123;% include 'includes/post-title-item.swig' %&#125;</div><div class="line">  &#123;% endif %&#125;</div><div class="line">&#123;% endfor %&#125;</div></pre></td></tr></table></figure>
+<p>以上代码在 <code>layout/tag.swig</code> 中，<a href="https://github.com/stiekel/hexo-theme-random/blob/master/layout/tag.swig" target="_blank" rel="external">在线代码</a>。</p>
+<h3 id="首页"><a href="#首页" class="headerlink" title="首页"></a>首页</h3><p>首页一般会包括一些链接和最近的几篇文章，使用的模板文章为 <code>layout/index.swig</code>。链接可以固定的，比如，显示首页、存档页。也可以从配置文件中读取链接列表，再予以显示。</p>
+<p>如果要显示最近的几篇文章的列表，可以使用 <code>page.posts</code> 中的文章列表，注意加上翻页链接。</p>
+<h3 id="分类列表页与分类文章列表页"><a href="#分类列表页与分类文章列表页" class="headerlink" title="分类列表页与分类文章列表页"></a>分类列表页与分类文章列表页</h3><p>分类列表页显示博客里的所有分类，分类文章列表页显示某个分类中的文章列表。</p>
+<p>Hexo 并没有专门分类列表页的模板，那该如何处理呢？一般是写在页面模板中，即 <code>layout/page.swig</code> 里，然后判断页面类型变量 <code>page.type</code>，如果是 <code>categories</code>，则显示分类列表页。再在博客里创建一个页面，指定其 <code>type</code> 为 <code>categories</code> 。实现方法如下，先来看看 <code>layout/page.swig</code> 中的代码：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&#123;% extends 'includes/layout.swig' %&#125;</div><div class="line"></div><div class="line">&#123;% block body %&#125;</div><div class="line">  &lt;article id="page"&gt;</div><div class="line">    &#123;% set page_title = page.title %&#125;</div><div class="line">    &#123;# 判断是否是分类列表页，如果是，显示对应内容 #&#125;</div><div class="line">    &#123;% if 'categories' === page.type %&#125;</div><div class="line">      &lt;h1 class="center-title"&gt;&#123;&#123; page_title || __('category_title') &#125;&#125;&lt;/h1&gt;</div><div class="line">      &#123;&#123; list_categories() &#125;&#125;</div><div class="line">    &#123;# 显示普通页面的内容 #&#125;</div><div class="line">    &#123;% else %&#125;</div><div class="line">      &lt;h1 class=""&gt;&#123;&#123; page_title &#125;&#125;&lt;/h1&gt;</div><div class="line">      &#123;% autoescape false %&#125;&#123;&#123;page.content &#125;&#125;&#123;% endautoescape %&#125;</div><div class="line">    &#123;% endif %&#125;</div><div class="line">  &lt;/article&gt;</div><div class="line"></div><div class="line">  &#123;% include 'includes/pagination.swig' %&#125;</div><div class="line">&#123;% endblock %&#125;</div></pre></td></tr></table></figure>
+<p>要显示所有的分类，这里是使用了 <code>list_category()</code> 来显示，也可以从 <code>site.categories</code> 中遍历组织显示。接着，使用如下命令创建一个页面：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new page categories</div></pre></td></tr></table></figure>
+<p>然后在站点的 <code>source</code> 文件夹下，会多出来一个名为 <code>categories</code> 的文件夹，只包括一个名为 <code>index.md</code> 的文件，内容如下：</p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">title: categories</div><div class="line"><span class="section">date: 2016-06-19 10:29:23</span></div><div class="line">---</div></pre></td></tr></table></figure>
+<p>将其内容修改为：</p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">title: 分类</div><div class="line">date: 2016-06-19 10:29:23</div><div class="line">type: "categories"</div><div class="line"><span class="section">comments: false</span></div><div class="line">---</div></pre></td></tr></table></figure>
+<p>这样，Hexo 在生成页面时，判断到 <code>type</code> 为 <code>categories</code>，便会生成分类列表。页面的地址为 <code>/categories/</code>。</p>
+<p>而对于分类文章列表页，则需要在 <code>layout/category.swig</code> 中编辑。具体的文章列表，可以从 <code>page.posts</code> 中取，也可以从 <code>site.posts</code> 中取文章，再根据文章分类筛选显示。</p>
+<h3 id="标签列表页与标签文章列表页"><a href="#标签列表页与标签文章列表页" class="headerlink" title="标签列表页与标签文章列表页"></a>标签列表页与标签文章列表页</h3><p>这个与分类的处理类似，不做重复介绍。</p>
+<h3 id="归档页"><a href="#归档页" class="headerlink" title="归档页"></a>归档页</h3><p>归档页使用的 <code>layout/archive.swig</code> 模板，一般是按年或按月来显示文章。Hexo 里其实有专门按年和月显示的文章列表页，从 <code>page.posts</code> 里读取文章列表，再根据上文中提到的<code>is_month()</code> / <code>is_year()</code> 来组织显示。</p>
+<p>文章列表显示比较简单，单说一点，如何按年分隔来显示文章列表，当然，按月分隔显示的操作也一样。</p>
+<p>操作方法其实比较简单，先遍历 <code>page.posts</code> ，判断当年文章对比前一篇文章的发表年份是否变化，如果变化，则加一个年份的显示，代码实现如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">&#123;# 先遍历一篇文章列表，找出每年各发了多少文章，以便显示 #&#125;</div><div class="line">&#123;% set howMuch = &#123;&#125; %&#125;</div><div class="line">&#123;% for postItem in page.posts.toArray() %&#125;</div><div class="line">  &#123;% set thisYear = date(postItem.date, 'YYYY') %&#125;</div><div class="line">  &#123;% if !howMuch[thisYear] %&#125;</div><div class="line">    &#123;% set howMuch[thisYear] = 0 %&#125;</div><div class="line">  &#123;% endif %&#125;</div><div class="line">  &#123;% set howMuch[thisYear] = howMuch[thisYear] + 1 %&#125;</div><div class="line">&#123;% endfor %&#125;</div><div class="line">&#123;# 开始显示， lastYear 为上一篇文章的发表年份 #&#125;</div><div class="line">&#123;% set lastYear %&#125;</div><div class="line">&#123;% for postItem in page.posts.toArray() %&#125;</div><div class="line">  &#123;# 当前文章的发表年份 #&#125;</div><div class="line">  &#123;% set thisYear = date(postItem.date, 'YYYY') %&#125;</div><div class="line">  &#123;# 如果当前文章年份与上一篇不一样，则显示年份 #&#125;</div><div class="line">  &#123;% if thisYear !== lastYear %&#125;</div><div class="line">    &#123;% set lastYear = thisYear %&#125;</div><div class="line">    &lt;h3 class="archive-year-title"&gt;&#123;&#123; thisYear &#125;&#125;</div><div class="line">    &#123;# 年份后面，显示一下这年共发表了多少篇文章 #&#125;</div><div class="line">    &#123;% if howMuch[thisYear] %&#125;</div><div class="line">      &lt;span class="posts-count"&gt;</div><div class="line">      &#123;&#123; __('total_title') &#125;&#125;</div><div class="line">      &#123;&#123; howMuch[thisYear] &#125;&#125;</div><div class="line">      &#123;% if 1 === howMuch[thisYear] %&#125;</div><div class="line">        &#123;&#123; __('post_title') &#125;&#125;</div><div class="line">      &#123;% else %&#125;</div><div class="line">        &#123;&#123; __('posts_title') &#125;&#125;</div><div class="line">      &#123;% endif %&#125;</div><div class="line">      &lt;/span&gt;</div><div class="line">    &#123;% else %&#125;</div><div class="line">        &#123;&#123; __('not_post') &#125;&#125;</div><div class="line">    &#123;% endif %&#125;</div><div class="line">    &lt;/h3&gt;</div><div class="line">  &#123;% endif %&#125;</div><div class="line">  &#123;% include 'post-title-item.swig' %&#125;</div><div class="line">&#123;% endfor %&#125;</div></pre></td></tr></table></figure>
+<h3 id="图片与图片库"><a href="#图片与图片库" class="headerlink" title="图片与图片库"></a>图片与图片库</h3><p>文章的图片放在 <code>photos</code> 之中，在 <code>page.photos</code> 和 <code>post.photos</code> 中都有。Hexo 主题一般的做法是使用 <a href="http://fancyapps.com/fancybox/" target="_blank" rel="external">FancyBox</a> 来展示图片。</p>
+<p>两个地方可能要显示图片，一个是文章或页面的详情中， 另外一个是在各个文章列表中。</p>
+<h3 id="代码的显示"><a href="#代码的显示" class="headerlink" title="代码的显示"></a>代码的显示</h3><p>代码段一般是使用 <a href="">highlight</a> 的样式，直接加载它的 css 就行。另外可能需要调整一下代码段的 <code>padding</code> 和 <code>margin</code> ，另外就是字体。具体被 highlight 处理后的代码段的 HTML 结构，请通过 Chrome 调试工具查看，这里就不列了。</p>
+<p>除了代码段，在正文中之内还有一些代码文字，会使用 <code>&lt;code&gt;&lt;/code&gt;</code> 标签包裹，这个需要单独针对这个标签设置样式。比如，可以给一个浅灰的背景色，再改个字体，加个斜体等等。</p>
+<p>代码的字体，可以 <a href="http://www.cssfontstack.com/" target="_blank" rel="external">www.cssfontstack.com</a> 上找一组合适的，并且兼容 Windows / OS X 的字符，比如下面这个：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">code</span>, <span class="selector-tag">table</span> <span class="selector-class">.line</span>&#123;</div><div class="line">  <span class="attribute">font-family</span>: Consolas, Monaco, Courier New, Lucida Console;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="主题的发布"><a href="#主题的发布" class="headerlink" title="主题的发布"></a>主题的发布</h2><p>如果你想要更多的人看到你的主题，可以考虑发布到 Hexo 官方网站的主题列表中。需要经过几个步骤来实现。</p>
+<h3 id="主题测试"><a href="#主题测试" class="headerlink" title="主题测试"></a>主题测试</h3><p>官方提供了一个站点的示例，里面包含了多种需要考虑的可能情况。克隆 <a href="https://github.com/hexojs/hexo-theme-unit-test" target="_blank" rel="external">hexo-theme-unit-test</a> ，然后在这个站点里安装你的主题。并确定主题可以成功的处理如下几种类型的文章：</p>
+<ul>
+<li>图片文章</li>
+<li>无标题的文章</li>
+<li>带摘要的文章</li>
+<li>带视频的文章</li>
+<li>带图库的文章</li>
+<li>支持常用的标签，如代码块、Gist、jsFddle和引用等</li>
+<li>标签是网址的文章</li>
+<li>对东亚文字的支持——必然的</li>
+</ul>
+<h3 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h3><p>先 Fork 官方站点，<a href="https://github.com/hexojs/site" target="_blank" rel="external">hexojs/site</a> ，然后克隆到本地，再编辑站点内 <code>source/_data/theme.yml</code>，增加一段如下的数据：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">- name: Random</div><div class="line">  description: A hexo theme with random fullscreen background image.</div><div class="line">  link: https://github.com/stiekel/hexo-theme-random</div><div class="line">  preview: http://hexo-theme-random.herokuapp.com/</div><div class="line">  tags:</div><div class="line">    - responsive</div><div class="line">    - one_column</div><div class="line">    - background_image</div><div class="line">    - random</div><div class="line">    - iconfont</div><div class="line">    - modal</div></pre></td></tr></table></figure>
+<p>然后再在 <code>source/theme/screenshots/</code> 文件夹中放一个主题截图，尺寸为 800 * 500 ，文件名与主题名字一致。可以参考<a href="https://raw.githubusercontent.com/hexojs/site/master/source/themes/screenshots/Random.png" target="_blank" rel="external">这个图片</a>。</p>
+<p>其实主题制作，主要是各种细节，按你想要的样子去实现吧。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#本文内容与目的"><span class="toc-text">本文内容与目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最终结果"><span class="toc-text">最终结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基础知识"><span class="toc-text">基础知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hexo-工作流程"><span class="toc-text">Hexo 工作流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主题的基本结构"><span class="toc-text">主题的基本结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用-yeoman-生成基础代码"><span class="toc-text">使用 yeoman 生成基础代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多语言支持"><span class="toc-text">多语言支持</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#各个页面的布局"><span class="toc-text">各个页面的布局</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据的填充"><span class="toc-text">数据的填充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#主配置文件数据"><span class="toc-text">主配置文件数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主题配置文件"><span class="toc-text">主题配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置文件中数据的使用"><span class="toc-text">配置文件中数据的使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用功能的实现"><span class="toc-text">常用功能的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#获取站点的所有的文章、页面、标签和分类"><span class="toc-text">获取站点的所有的文章、页面、标签和分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取当前页面的数据"><span class="toc-text">获取当前页面的数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#各种链接的处理"><span class="toc-text">各种链接的处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在页面中加入-css-与-js-文件"><span class="toc-text">在页面中加入 css 与 js 文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#当前页面类型的判断"><span class="toc-text">当前页面类型的判断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常用的字符串处理函数"><span class="toc-text">常用的字符串处理函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#时间的处理"><span class="toc-text">时间的处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成标签云"><span class="toc-text">生成标签云</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成文章的目录"><span class="toc-text">生成文章的目录</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#页面的组织"><span class="toc-text">页面的组织</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#代码的复用"><span class="toc-text">代码的复用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#首页"><span class="toc-text">首页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分类列表页与分类文章列表页"><span class="toc-text">分类列表页与分类文章列表页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#标签列表页与标签文章列表页"><span class="toc-text">标签列表页与标签文章列表页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#归档页"><span class="toc-text">归档页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#图片与图片库"><span class="toc-text">图片与图片库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码的显示"><span class="toc-text">代码的显示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#主题的发布"><span class="toc-text">主题的发布</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#主题测试"><span class="toc-text">主题测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#发布"><span class="toc-text">发布</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2016-06/Pure-js-get-line-count-of-html-element.html" class="prev">&larr; 上一篇 使用原生 JavaScript 获取文本的行数</a>
+  
+
+  
+
+  
+    <a href="/2016-06/Material-Design-Float-Action-Button.html" class="next">下一篇 CSS 模拟实现 Material Design 样式的悬浮操作按钮 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,439 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="BlueHost的空间附带了邮箱功能，功能相对够用。今天早上专门来试了一下BlueHost邮件功能开通的方法，之前搜索了一下，好像网上还没有相对完整的资料，于是开了这个过程记录。主要包括BlueHost设置和MX记录的设置。">
+  
+  <title>BlueHost空间中的免费邮箱功能开通 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2010-04/qmail-rar-zip-7z-preview.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        QQ邮箱附件压缩包“在线预览”功能初识
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2010-04/bluehost-dedicated-ip.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        BlueHost购买独立IP
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>BlueHost空间中的免费邮箱功能开通</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2010年4月7日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/建站相关/">建站相关</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/BlueHost/">BlueHost</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/域名/">域名</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/mail/">mail</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>BlueHost的空间附带了邮箱功能，功能相对够用。今天早上专门来试了一下BlueHost邮件功能开通的方法，之前搜索了一下，好像网上还没有相对完整的资料，于是开了这个过程记录。主要包括BlueHost设置和MX记录的设置。</p>
+<a id="more"></a>
+<h3 id="1、BlueHost设置"><a href="#1、BlueHost设置" class="headerlink" title="1、BlueHost设置"></a>1、BlueHost设置</h3><p>先在BlueHost主页上用域名和密码登录，之后，进入cPanel，然后找到Mail之中的Email Accounts，开始创建Email账号。</p>
+<p><a href="/upfile/2010/04/cPanel_Mail.png"><img src="/upfile/2010/04/cPanel_Mail-500x146.png" alt="" title="cPanel_Mail"></a></p>
+<p>添加邮箱的名字和密码，例如，这里的用户名是admin@sex.com（<a href="http://chensd.com/2010-04/bluehost-dedicated-ip.html">再次声明</a>，sex.com可不是我的），@右侧有个下拉列表，分别是“sex.com”和“mail.sex.com”，如果想使自己的域名是admin@mail.sex.com，则可以选择第二个。MailBox Quote可以设定邮箱大小，只能是250MB或者是无限制。完成之后，点击“Create Account”按钮，即完成添加。</p>
+<p><a href="/upfile/2010/04/Email_Accounts.png"><img src="/upfile/2010/04/Email_Accounts-500x298.png" alt="" title="Email_Accounts"></a></p>
+<p>这样，邮箱就添加完成了，然后进入<a href="http://sex.com/webmail/，输入用户名密码，即可进行登录：" target="_blank" rel="external">http://sex.com/webmail/，输入用户名密码，即可进行登录：</a></p>
+<p><a href="/upfile/2010/04/Mail_Login.png"><img src="/upfile/2010/04/Mail_Login-307x400.png" alt="" title="Mail_Login"></a></p>
+<p>登录后，就可以看到邮箱的管理界面了：</p>
+<p><a href="/upfile/2010/04/Mail_Manage.png"><img src="/upfile/2010/04/Mail_Manage-499x286.png" alt="" title="Mail_Manage"></a></p>
+<p>显示的有三种方法来进行邮件的阅读方式，随便哪一种都行，在这里，我们选择SquirrelMail，然后，即可开始进行邮件的收发。进入后，点击“Compose”，写一个邮件，发到一个Gmail邮箱。</p>
+<p><a href="/upfile/2010/04/compose_mail.png"><img src="/upfile/2010/04/compose_mail-499x400.png" alt="" title="compose_mail"></a></p>
+<p>然后发送，数秒之后，即可在Gmail中收到邮件，我们可以试着回复。这会发现，Gmail返给我们一个投递错误的回复。这是因为我们还没有为邮箱设置MX记录。</p>
+<h3 id="2、为邮箱设置MX-DNS记录"><a href="#2、为邮箱设置MX-DNS记录" class="headerlink" title="2、为邮箱设置MX DNS记录"></a>2、为邮箱设置MX DNS记录</h3><p>我的这个域名是在<a href="http://chensd.com/2010-03/godaddy-plan-to-stop-domain-service-in-china.html">Godaddy</a>申请的，进入Godaddy，然后登录，再点击Domain Auctions，进入Domains中的Domain Manager，点击相应域名，开始进行域名的管理。</p>
+<p>顺便抱怨一下，Godaddy的域名管理系统，竟然还不支持Chrome，害得我每次管理域名，都得使用人见人骂的IE（Firefox已经是我的翻墙专用工具了）。</p>
+<p>点击“Total DNS”下方的“Total DNS Control”，开始进行MX记录设置。在管理界面中，找到“MX (Mail Exchange)”，点击右侧的“Add New MX Record”，在“Host Name”和“Enter Goes To Address”都填入“@”，然后点击OK按钮。</p>
+<p><a href="/upfile/2010/04/Add_MX_Record.png"><img src="/upfile/2010/04/Add_MX_Record-500x178.png" alt="" title="Add_MX_Record"></a></p>
+<p>稍候，就会提示添加成功。Godaddy的域名指向更改，时间是非常快的。一般对于第一次设置的记录，可以立即生效。</p>
+<p>再试试用Gmail给我们的admin@sex.com回复，OK，发送成功了！</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、BlueHost设置"><span class="toc-text">1、BlueHost设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、为邮箱设置MX-DNS记录"><span class="toc-text">2、为邮箱设置MX DNS记录</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2010-04/qmail-rar-zip-7z-preview.html" class="prev">&larr; 上一篇 QQ邮箱附件压缩包“在线预览”功能初识</a>
+  
+
+  
+
+  
+    <a href="/2010-04/bluehost-dedicated-ip.html" class="next">下一篇 BlueHost购买独立IP &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

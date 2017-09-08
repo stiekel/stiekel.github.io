@@ -1,0 +1,447 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="最近与xiaofeng在实现一个类Digg的聚合网站，其中有一个很常见功能——“顶”贴，虽然使用普通的超连接也可以实现这一功能，但在用户点击后会有一个刷新的过程，要想有更好的体验，使用AJAX是必须的，这也是一个典型的AJAX应用。
+AJAX在用户的操作和服务器间建立了一个桥梁，改变了以前在浏览器中每次点击都要刷新页面才能获取新数据的缺点，用户在浏览器的行为将被AJAX的JavaScript...">
+  
+  <title>利用PHP和AJAX实现“顶”贴功能 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2011-06/excuse-to-sidchen.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        给SidChen@Gmail.com主人的一封信！另：Google Accounts的安全性问题
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2011-03/cisco-srp532w.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        坑爹的思科精睿
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>利用PHP和AJAX实现“顶”贴功能</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2011年5月16日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月26日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/php/">php</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/ajax/">ajax</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>最近与<a href="http://shenxf.com" target="_blank" rel="external">xiaofeng</a>在实现一个类Digg的聚合网站，其中有一个很常见功能——“顶”贴，虽然使用普通的超连接也可以实现这一功能，但在用户点击后会有一个刷新的过程，要想有更好的体验，使用AJAX是必须的，这也是一个典型的AJAX应用。</p>
+<p>AJAX在用户的操作和服务器间建立了一个桥梁，改变了以前在浏览器中每次点击都要刷新页面才能获取新数据的缺点，用户在浏览器的行为将被AJAX的JavaScript脚本捕获，并适时的向服务器获取数据，再在浏览器中进行显示。</p>
+<h3 id="1、实现功能与结构"><a href="#1、实现功能与结构" class="headerlink" title="1、实现功能与结构"></a>1、实现功能与结构</h3><p>最终的结果，是实现一个由一个超连接和一个span，点击超连接后，将数据库中该文章被顶次数加1，另外将span中显示的被顶数加1。具体演示可以参考<a href="Digg.com">Digg.com</a>主页中的Digg按钮。这一功能分别有以下两个文件来实现：</p>
+<ul>
+<li><p>index.php：文章列表，有多篇文章，每篇文章标题的左侧显示有该文章的被顶数及“顶”按钮；<br><a href="/upfile/2011/05/dig.png"><img src="/upfile/2011/05/dig.png" alt="" title="dig"></a></p>
+</li>
+<li><p>dig.php：接受一个get参数，名称为postid，值为文章的id，实现的功能是将这篇文章存储在数据库中的被顶次数加1；</p>
+</li>
+<li>dig.js：存储超链接的单击事件，在超链接单击后，一方面将文章id传给dig.php，另外将index.php页面中的被顶数加1；<a id="more"></a>
+</li>
+</ul>
+<h3 id="2、index-php中“顶”及被顶次数"><a href="#2、index-php中“顶”及被顶次数" class="headerlink" title="2、index.php中“顶”及被顶次数"></a>2、index.php中“顶”及被顶次数</h3><p>在一个文章列表中，拥有多个文章，而为了控制每篇文章的次数，需要对显示被顶次数的span指定一个唯一的id。例如，下面的代码可以实现这一功能（$row为从数据库中取出的一行，其中id为文章id，dig为该文章被顶次数）：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span> = <span class="string">"numDig-&lt;?php echo $row["</span><span class="attr">id</span>"]?&gt;</span>"&gt;<span class="php"><span class="meta">&lt;?php</span> <span class="keyword">echo</span> $row[<span class="string">'dig'</span>];<span class="meta">?&gt;</span></span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>利用文章在数据库中的id和一个固定的字符串就为span指定了唯一的id，如numDig-474等。</p>
+<p>在其下方还有一个供点击的超连接，超连接的单击事件将调用javascript中自定义的dig函数，并向其传送一个参数，参数内容为被顶文章的id，实现如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"javascript:void(0)"</span> <span class="attr">onclick</span> = <span class="string">"dig(&lt;?php echo $row['id'];?&gt;)"</span> <span class="attr">id</span> = <span class="string">"btnDig-&lt;?php echo $row['id']?&gt;"</span>&gt;</span>顶<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>文章列表中显示被顶次数的顶贴连接就完成了。</p>
+<h3 id="2、dig-js中AJAX的实现"><a href="#2、dig-js中AJAX的实现" class="headerlink" title="2、dig.js中AJAX的实现"></a>2、dig.js中AJAX的实现</h3><p>对于这个脚本来讲，它要实现以下两个方面的功能</p>
+<ul>
+<li>改变index.php中由id为numDig-postid的span中显示的被顶次数，使其加1；</li>
+<li>向dig.php提交被顶文章的id，以便其更新数据库中的数据；<br>先看改变index.php中被顶次数显示的实现，这里用一个自定义函数实现，函数名changeNumDig，需要传送一个参数，即被改变被顶次数文章的id。调用函数后，先检查参数是否为一个数字，若是则选构造显示被顶次数的span的id，其结构为numDig-postid，再获取其中存储的被顶次数值，并递增1。代码如下：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">changeNumDig</span>(<span class="params">postid</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span>(!<span class="built_in">isNaN</span>(postid)) &#123;</div><div class="line">        spanNumDigName = &amp;quot;numDig-&amp;quot; + postid;</div><div class="line">        numDig = <span class="built_in">document</span>.getElementById(spanNumDigName).innerHTML;</div><div class="line">        <span class="keyword">if</span>(!<span class="built_in">isNaN</span>(numDig)) &#123;</div><div class="line">            numDig ++;</div><div class="line">            <span class="built_in">document</span>.getElementById(spanNumDigName).innerHTML = numDig;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>另外就是更改数据库中的被顶次数，即向dig.php提交被顶文章的id，构造一个URL，再将其提交即可。这一过程需要使用AJAX中最重要的对象XmlHttpRequest，这一对象的创建不同的浏览器不一样，具体创建的方法可以参考<a href="http://www.w3school.com.cn/php/php_ajax_xmlhttprequest.asp" title="AJAX XMLHttpRequest" target="_blank" rel="external">W3CSchool中的介绍</a>。代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">GetXmlHttpRequest</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> xmlHttpReq = <span class="literal">null</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">    xmlHttpReq = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">catch</span>(e) &#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">        xmlHttpReq = <span class="keyword">new</span> ActiveXObject(&amp;quot;Msxml2.XMLHTTP&amp;quot;);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">catch</span>(e) &#123;</div><div class="line">        xmlHttpReq = <span class="keyword">new</span> ActiveXObject(&amp;quot;Microsoft.XMLHTTP&amp;quot;);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> xmlHttpReq;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>具体实现过程是使用XmlHttpRequest对象的open方法，实现代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">dig</span>(<span class="params">postid</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span>(!<span class="built_in">isNaN</span>(postid)) &#123;</div><div class="line">        <span class="keyword">var</span> url = &amp;quot;dig.php?postid=&amp;quot; + postid;</div><div class="line">        xmlHttpReq = GetXmlHttpRequest();</div><div class="line">        xmlHttpReq.open(&amp;quot;GET&amp;quot;, url, <span class="literal">true</span>);</div><div class="line">        xmlHttpReq.send(<span class="literal">null</span>);</div><div class="line">        changeNumDig(postid);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>3、dig.php修改数据库中的被顶次数</p>
+<p>dig.php接受一个需要改变被顶次数的文章id，然后在数据库中查询其所在行，将其dig属性自增1即可。</p>
+<p>考虑到安全问题，也需要先检查传进来的文章id是否为数字，然后连接数据库，构造查询字符串，执行检查并关闭即可。具体实现代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span>(!<span class="keyword">empty</span>($_GET[<span class="string">'postid'</span>]) <span class="keyword">and</span> (ctype_digit($_GET[<span class="string">'postid'</span>]))) &#123;</div><div class="line">    <span class="keyword">require_once</span>(<span class="string">'config.php'</span>);</div><div class="line">    $db = <span class="keyword">new</span> mysqli($dbhost, $dbuser, $dbpwd, $dbname) <span class="keyword">or</span> <span class="keyword">die</span>();</div><div class="line">    $query_string = &amp;quot;UPDATE top10_posts SET dig = dig + <span class="number">1</span> WHERE id =&#123;$_GET[<span class="string">'postid'</span>]&#125;&amp;quot;;</div><div class="line">    $db-&gt;query(<span class="string">'SET character_set_client = utf8'</span>);</div><div class="line">    $db-&gt;query(<span class="string">'SET character_set_connection = utf8'</span>);</div><div class="line">    $db-&gt;query(<span class="string">'SET character_set_results = utf8'</span>);</div><div class="line">    $db-&gt;query($query_string);</div><div class="line">    $db-&gt;close();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上三部分即可实现顶贴功能，这可以在很多Web2.0和聚合网站中看到，只不过可能要相对复杂，但实现的逻辑大都如此。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、实现功能与结构"><span class="toc-text">1、实现功能与结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、index-php中“顶”及被顶次数"><span class="toc-text">2、index.php中“顶”及被顶次数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、dig-js中AJAX的实现"><span class="toc-text">2、dig.js中AJAX的实现</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2011-06/excuse-to-sidchen.html" class="prev">&larr; 上一篇 给SidChen@Gmail.com主人的一封信！另：Google Accounts的安全性问题</a>
+  
+
+  
+
+  
+    <a href="/2011-03/cisco-srp532w.html" class="next">下一篇 坑爹的思科精睿 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名 JavaScript 程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+
