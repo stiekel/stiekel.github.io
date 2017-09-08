@@ -16,35 +16,6 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Safari 中转换 &#39;YYYY-M-D&#39; 格式时间的一个坑</title>
-    <link href="http://chensd.com/2017-09/safari-date-parse.html"/>
-    <id>http://chensd.com/2017-09/safari-date-parse.html</id>
-    <published>2017-09-08T07:44:35.105Z</published>
-    <updated>2017-06-27T03:46:57.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>昨天在微信开发的时候，遇到一个时间转换的坑，具体发现过程有多曲折就不说了。最终发现原因是，iOS 的 Sarari ——当然包括微信内置浏览器——在转换时间时，对 <code>YYYY-M-D</code> 的支持与 Chrome 和 Firefox 不一样。具体请看这个 <a href="http://chensd.com/code/safariDateParse.html">Demo</a>。</p>
-<p>由于 <code>YYYY-MM-DD</code> 并不是标准的时间格式，ECMA 并没有对它的转换进行规定，所以具体转换就看各个引擎的实现了，不过几个主要的浏览器都支持了这个格式，但对 <code>YYYY-M-D</code> 的支持就不统一了。Firefox 是支持的，所以 Chrome 也就支持了。但 Safari 就……</p>
-<p>建议：</p>
-<ul>
-<li>尽量不要使用 <code>YYYY-M-D</code> 格式的时间来进行转换，显示也要避免</li>
-<li>使用第三方库来操作时间转换，比如 <a href="https://github.com/datejs/Datejs" target="_blank" rel="external">Datejs</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;昨天在微信开发的时候，遇到一个时间转换的坑，具体发现过程有多曲折就不说了。最终发现原因是，iOS 的 Sarari ——当然包括微信内置浏览器——在转换时间时，对 &lt;code&gt;YYYY-M-D&lt;/code&gt; 的支持与 Chrome 和 Firefox 不一样。具体请看这个 
-    
-    </summary>
-    
-      <category term="随手记" scheme="http://chensd.com/categories/%E9%9A%8F%E6%89%8B%E8%AE%B0/"/>
-    
-    
-      <category term="JavaScript" scheme="http://chensd.com/tags/JavaScript/"/>
-    
-  </entry>
-  
-  <entry>
     <title>打造一个安全的用户名密码登录系统</title>
     <link href="http://chensd.com/2016-08/Safe-username-password-Login-System.html"/>
     <id>http://chensd.com/2016-08/Safe-username-password-Login-System.html</id>
@@ -1872,6 +1843,36 @@
     
       &lt;p&gt;远离人群，无论是思想还是身体。这话是没错的，尤其是年轻的人。于是2015年第一天，去上海昆虫博物馆！&lt;/p&gt;
 &lt;p&gt;这昆虫博物馆，还是非常有&lt;a href=&quot;http://zh.wikipedia.org/zh-cn/%E4%B8%8A%E6%B5%B7%E6%98%86%E8%99%AB%E5%8D%9A%E7%89%A9%E9%A6%86&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;来头&lt;/a&gt;的。法国神父&lt;a href=&quot;http://zh.wikipedia.org/zh-cn/%E9%9F%A9%E4%BC%AF%E7%A6%84&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;韩伯禄&lt;/a&gt;1868年来到中国，脚跟没稳都开始着手建立博物馆，忙活了十多年，终于在1883年建成了自然博物馆，想想那时开埠也不过几十年，他却想着建立自然博物馆。只可惜，上世纪五十年代这博物馆被拆分，昆虫馆便成了中科院的资产。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="乱七八糟" scheme="http://chensd.com/categories/%E4%B9%B1%E4%B8%83%E5%85%AB%E7%B3%9F/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>From Wordpress to Hexo</title>
+    <link href="http://chensd.com/2014-12/from-wordpress-to-hexo.html"/>
+    <id>http://chensd.com/2014-12/from-wordpress-to-hexo.html</id>
+    <published>2014-12-30T16:00:21.000Z</published>
+    <updated>2017-06-27T03:46:57.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>2014年就要过去了，而我这一年都没有写哪怕一篇博客。于是我开始想着找一个理由。<a id="more"></a></p>
+<p>前不久，因为翻译的原因，开始用Markdown来组织大量的文字，自然而然的也想着用它来写博客，不过一想到打开放在Bluehost上的Wordpress，就实在忍不住抱怨几句：</p>
+<ul>
+<li>文章的格式与排版：Wordpress的博文，是用HTML组织的，几乎所有的富文本编辑器——包括 Word——都不可避免的会出现格式混乱，尤其是当博文的格式比较复杂的时候，比如，插入代码，Wordpress中的代码，一般都通过专门的插件来显示，而插件还要与富文本编辑器共同组织格式，当博文中包括一段既有HTML，又有JS和PHP的代码时，编辑器内的格式简直不忍直视，显示出来的文章也千奇百怪。想想历史悠久的LaTeX，还有维基百科，使用特殊符号来组织格式，虽然门坎稍微高了点儿，但的确是对文章进行更好的组织和展示的最佳实践。</li>
+<li>托管：阮一峰老师在他的<a href="http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html" target="_blank" rel="external">博文</a>中提到了博客作者的三阶段，这至少是我的写博经历。最早写<a href="http://blog.csai.cn" target="_blank" rel="external">博客BSP</a>现在已经跟风做P2P门户了，搭起独立博客后，是放在租的VPS上，用那句流行的话，叫“基于众所周知的原因”，当然是选择国外的VPS提供商，选后辗转于PhotonVPS、RLS Hosting和Burst.NET，直到现在用的Bluehost——托<a href="http://shenxf.com" target="_blank" rel="external">朋友</a>的福，一直没花什么钱。</li>
+<li>速度：可能如果服务器是在国内，这个问题也便不是问题了，</li>
+<li>太重了：Wordpress是个强大的平台，支持很完善的个性化和扩展，但对于单纯的写博客而言，其实是有点重的，开始折腾Wordpress的一两年，可能会弄弄这插件，换换那主题，时间一长，其实打开它也就是写写博客，但它的编辑器，而又不是那么友好。</li>
+</ul>
+<p>对于格式，Markdown算是比较完美的解决了，而且可以专注于书写，轻松的处理漂亮而又整齐的格式。剩下就是博客平台的问题了，一搜索，于是发现了 Jekyll / Octopress / Hexo，没经过什么徘徊，就决定用Hexo，无它，唯Node.js耳。</p>
+<p>Hexo的配置的确比较简单，<a href="http://orderedlist.com/modernist/" target="_blank" rel="external">modernist</a>这个主题正合我意。国内的<a href="https://gitcafe.com/" target="_blank" rel="external">Gitcafe</a>也正好有与<a href="http://gitcafe.io/" target="_blank" rel="external">Github Pages</a>类似的服务，找了几篇相关的介绍文章（<a href="http://zipperary.com/categories/hexo/" target="_blank" rel="external">1</a>, <a href="http://ibruce.info/2013/11/22/hexo-your-blog/" target="_blank" rel="external">2</a>, <a href="http://blog.yuanbin.me//posts/2014/05/multi-deployment-with-hexo.html" target="_blank" rel="external">3</a>），很快就完成了，Hexo的Wordpress迁移工具也非常给力，唯一遗憾的是，图片还没放到七牛上——他们自定义域名是需要手持身份证拍照验证的——以后再迁移过去吧，先直接放到Gitcafe Pages。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;2014年就要过去了，而我这一年都没有写哪怕一篇博客。于是我开始想着找一个理由。
     
     </summary>
     
