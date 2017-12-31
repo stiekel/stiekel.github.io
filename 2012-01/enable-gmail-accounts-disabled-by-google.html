@@ -1,0 +1,432 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="计划将一些邮件从现有的Gmail导出，并存储到一个新的Gmail中，于是新申请了账号，但在使用Gmail自带的“导入其它邮箱的邮件和联系人”的功能时，发现Gmail不支持从其它Gmail导入。
+为了达到目的，我先利用QQ邮箱的收信功能，将Gmail中的部分邮件先转存到QQ邮箱中，再用Gmail的导入功能进行导入，结果的确也成功了。
+但在成功后大约半个小时，我发现我的新Gmail账号已经无法使...">
+  
+  <title>一次Gmail账号被封后解封的经历 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2012-09/add-disk-for-centos-on-esx.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        为ESX上的CentOS添加新硬盘
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2011-11/php-cli-param-as-get-format.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        在PHP CLI下使用类似GET的方法传参
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>一次Gmail账号被封后解封的经历</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2012年1月15日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月27日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/乱七八糟/">乱七八糟</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/Google/">Google</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>计划将一些邮件从现有的Gmail导出，并存储到一个新的Gmail中，于是新申请了账号，但在使用Gmail自带的“导入其它邮箱的邮件和联系人”的功能时，发现Gmail不支持从其它Gmail导入。</p>
+<p>为了达到目的，我先利用QQ邮箱的收信功能，将Gmail中的部分邮件先转存到QQ邮箱中，再用Gmail的导入功能进行导入，结果的确也成功了。</p>
+<p>但在成功后大约半个小时，我发现我的新Gmail账号已经无法使用，通过Gmail的多账号登录进行切换，密码输入成功后直接跳到一个账号被禁用的提示页面，紧接着，Android手机上也提示输入这个新邮箱的密码，无论输入什么，都提示账号信息错误。</p>
+<p><a href="/upfile/2012/01/Gmail_disabled.png"><img src="/upfile/2012/01/Gmail_disabled.png" alt="" title="Gmail Account Disabled By Google"></a></p>
+<a id="more"></a>
+<p>想来想去，Google禁用这个账号，有以下几个可能的原因：</p>
+<ul>
+<li>Google发现我从一另外一个Gmail里导入了邮件和联系人。这些导入的邮件中，包括Gmail自动发出的一些新注册用户欢迎信息；</li>
+<li>违反Google+的实名政策。现在Gmail与Google+已经是深度结合，因为这个邮箱使用了非常明显的假名，不排除Google因为这个原因对账号进行了封禁，但好像最近Google放宽了Google+的实名限制；</li>
+<li>多个Gmail账号及Google企业邮箱登录，当时一共登录了大约四到七个账号，包括几个Gmail及几个Google托管的企业邮箱，另外还不停的在香港、美国VPN之间切换，但被封禁的只有新申请的号码，因此可能性也不太大；</li>
+</ul>
+<p>账号停用的页面中有一句提示：</p>
+<blockquote>
+<p>Terminate you account at any time, for any reason, <strong>with or without notice</strong></p>
+</blockquote>
+<p>原来，Google的协议里早就说清楚了，他们可以随意停用你的账号，连通知你的事儿都可以不管。</p>
+<p>无奈之极，只好报着试一试的心情，在停用页面的“Next steps for disabled account”里有个联系Google，于是进行发了一个投诉，这也是第一次向Google投诉，我提交了如下的内容：</p>
+<blockquote>
+<p>I just multi login in to this account with other 3 gmail and 1 enterprise gmail, but Google disable my account, This account is very important for me, please help me to regain it, Thanks!</p>
+</blockquote>
+<p>提交完成后，给的提示中告诉我，他们可能给或不给我任何回复，所以基本不报希望。</p>
+<p>不过出人意料的是，大约不到一个小时，Google使恢复了我的账号，并向这个邮箱里发送了一个投诉处理回复。总算是给恢复了账号。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2012-09/add-disk-for-centos-on-esx.html" class="prev">&larr; 上一篇 为ESX上的CentOS添加新硬盘</a>
+  
+
+  
+
+  
+    <a href="/2011-11/php-cli-param-as-get-format.html" class="next">下一篇 在PHP CLI下使用类似GET的方法传参 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1","myvm"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

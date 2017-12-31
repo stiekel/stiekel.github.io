@@ -1,0 +1,433 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="前两天新发布的 Node.js 4.0.0 稳定版，总算让 Node.js 用上了新的 V8 4.5，也使得 V8 中的 ECMAScript 6 新特性终于来到了 Node.js，除了引入注目的类型数据、箭头函数一类，还有个模板字符串（Template Strings），使得广大 Node.js 程序员可以用原生的方法来进行相对复杂的字符串处理了。">
+  
+  <title>Node.js 4.0.0 新特性：模板字符串（Template Strings） [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2015-09/How-to-invoke-static-method-in-instance-method-of-mongoose.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        如何在 Mongoose 的实例方法中访问静态方法
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2015-09/Hexo-Relative-Link-Problems.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Hexo中的分页、标签、分类链接地址错误问题
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Node.js 4.0.0 新特性：模板字符串（Template Strings）</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2015年9月13日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月27日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Node-js/">Node.js</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>前两天<a href="https://nodejs.org/en/blog/release/v4.0.0/" target="_blank" rel="external">新发布的 Node.js 4.0.0 稳定版</a>，总算让 Node.js 用上了新的 V8 4.5，也使得 V8 中的 ECMAScript 6 新特性终于来到了 Node.js，除了引入注目的类型数据、箭头函数一类，还有个模板字符串（Template Strings），使得广大 Node.js 程序员可以用原生的方法来进行相对复杂的字符串处理了。</p>
+<a id="more"></a>
+<h3 id="蛮荒时代"><a href="#蛮荒时代" class="headerlink" title="蛮荒时代"></a>蛮荒时代</h3><p>在以前，如果要处理一个多行的字符串，你得：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// \\n 是为了高亮插件的显示，实际应为 \n</span></div><div class="line"><span class="built_in">console</span>.log(<span class="string">'鹅，鹅，鹅，\\n\</span></div><div class="line">曲项向天歌。\\n\</div><div class="line">白毛浮绿水，\\n\</div><div class="line">红掌拨清波。');</div></pre></td></tr></table></figure>
+<p>当然，老成一点的，还知道可以用数组进行组合。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log([<span class="string">'鹅，鹅，鹅，'</span>,</div><div class="line"><span class="string">'曲项向天歌。'</span>,</div><div class="line"><span class="string">'白毛浮绿水，'</span>,</div><div class="line"><span class="string">'红掌波清波。'</span>].join(<span class="string">'\\n'</span>));</div></pre></td></tr></table></figure>
+<p>那如果要在字符串中插入变量呢？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> person = &#123;<span class="attr">name</span>: <span class="string">'Sid'</span>, <span class="attr">location</span>: <span class="string">'Shanghai'</span>&#125;;</div><div class="line"><span class="built_in">console</span>.log(<span class="string">'person: '</span> + <span class="built_in">JSON</span>.stringify(person) + <span class="string">' is here'</span>);</div><div class="line"><span class="comment">// person:&#123;"name":"Sid","location":"Shanghai"&#125; is here</span></div></pre></td></tr></table></figure>
+<p>或者这样：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">console</span>.log(<span class="string">'person:'</span>, person, <span class="string">'is here'</span>);</div><div class="line"><span class="comment">// person: &#123; name: 'Sid', location: 'Shanghai' &#125; is here</span></div></pre></td></tr></table></figure></p>
+<p>没错，一个都没让人省心。</p>
+<h3 id="闪亮登场"><a href="#闪亮登场" class="headerlink" title="闪亮登场"></a>闪亮登场</h3><p>模板字符串出场了，它就是为了解决上面这些问题。与变通字符串使用单双引号来包裹值不一样，模板字符串用的是 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">```js</div><div class="line">console.log(`  鹅，鹅，鹅，</div><div class="line">  曲项向天歌。</div><div class="line"> 白毛浮绿水，</div><div class="line">红掌波清波。`);</div></pre></td></tr></table></figure></p>
+<p>既然称之为模板，当然也就具有模板的一些功能：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> nameHe = <span class="string">'Li Lei'</span>, nameShe = <span class="string">'Han Meimei'</span>;</div><div class="line"><span class="built_in">console</span>.log(<span class="string">`</span></div><div class="line">  this is <span class="subst">$&#123;nameHe&#125;</span>, </div><div class="line">  this is <span class="subst">$&#123;nameShe&#125;</span>`</div><div class="line">  , nameHe);</div><div class="line"><span class="comment">/*</span></div><div class="line">  this is Li Lei, </div><div class="line">  this is Han Meimei Li Lei</div><div class="line">*/</div></pre></td></tr></table></figure>
+<p>还可以直接执行表达式：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> intA = <span class="number">10</span>;</div><div class="line"><span class="built_in">console</span>.log(<span class="string">`Math.sqrt(3):<span class="subst">$&#123;<span class="built_in">Math</span>.sqrt(<span class="number">3</span>)&#125;</span>, intA^2: <span class="subst">$&#123;intA * intA&#125;</span>`</span>);</div><div class="line"><span class="comment">// Math.sqrt(3):1.7320508075688772, intA^2: 100</span></div></pre></td></tr></table></figure>
+<p>此外，可以组织一个函数，来专门处理模版字符串，类似于这样：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">taggedTS</span>(<span class="params"></span>) </span>&#123;</div><div class="line">  <span class="built_in">console</span>.log(<span class="string">'arguments:'</span>, <span class="built_in">arguments</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line">taggedTS <span class="string">`This is <span class="subst">$&#123;intA&#125;</span> and sqrt: <span class="subst">$&#123;<span class="built_in">Math</span>.sqrt(intA)&#125;</span>`</span></div><div class="line"><span class="comment">/*</span></div><div class="line">arguments: &#123; '0': [ 'This is ', ' and sqrt: ', '' ],</div><div class="line">  '1': 10,</div><div class="line">  '2': 3.1622776601683795 &#125;</div><div class="line">*/</div></pre></td></tr></table></figure>
+<p>注意，虽然看起来像个普通的函数，但在调用的时候，不能使用括号，而是直接用函数名加模板字符串的方式。传入的参数，分为两部分，第一个是被动态的值所分隔的多个字符串，后面是对应的各个动态值的计算结果。</p>
+<h3 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h3><p>与SQL注入一样，如果要把用户的输入直接作为模板字符串的内容，务必先进行仔细的检查，因为恶意的输入者，可能会通过猜测变量名，来获取你程序中比较危险的值。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#蛮荒时代"><span class="toc-text">蛮荒时代</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#闪亮登场"><span class="toc-text">闪亮登场</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安全问题"><span class="toc-text">安全问题</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2015-09/How-to-invoke-static-method-in-instance-method-of-mongoose.html" class="prev">&larr; 上一篇 如何在 Mongoose 的实例方法中访问静态方法</a>
+  
+
+  
+
+  
+    <a href="/2015-09/Hexo-Relative-Link-Problems.html" class="next">下一篇 Hexo中的分页、标签、分类链接地址错误问题 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1","myvm"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

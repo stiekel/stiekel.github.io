@@ -1,0 +1,619 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="闲来无事，便想着在Burst.NET和PhotonVPS上跑跑UnixBunch试试。也算是看看用过的几个VPS的基本情况。
+一、UnixBench 5.1.2测试方法用的是5.1.2版。在网上找到一个可以下载的地址，直接使用下面命令便可以下载后直接运行：
+
+wget http://www.ctohome.com/linux-vps-pack/unixbench.sh;sh ./unixbe...">
+  
+  <title>无聊：Burst.NET与PhotonVPS的两个性能测试 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2010-10/baidu-jingyan-domain-media-ehow.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        百度经验——Demand Media的山寨
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2010-10/lxb.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        兴奋！！！
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>无聊：Burst.NET与PhotonVPS的两个性能测试</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2010年10月10日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月27日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/建站相关/">建站相关</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/PhotonVPS/">PhotonVPS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/VPS/">VPS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Burst-NET/">Burst.NET</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>闲来无事，便想着在<a href="http://chensd.com/tag/Burst.NET">Burst.NET</a>和<a href="http://www.photonvps.com/billing/aff.php?aff=651" target="_blank" rel="external">PhotonVPS</a>上跑跑UnixBunch试试。也算是看看用过的几个<a href="http://chensd.com/tag/VPS">VPS</a>的基本情况。</p>
+<h2 id="一、UnixBench-5-1-2测试方法"><a href="#一、UnixBench-5-1-2测试方法" class="headerlink" title="一、UnixBench 5.1.2测试方法"></a>一、UnixBench 5.1.2测试方法</h2><p>用的是5.1.2版。在网上找到一个可以下载的地址，直接使用下面命令便可以下载后直接运行：</p>
+<blockquote>
+<p>wget <a href="http://www.ctohome.com/linux-vps-pack/unixbench.sh;sh" target="_blank" rel="external">http://www.ctohome.com/linux-vps-pack/unixbench.sh;sh</a> ./unixbench.sh;<br>网址缩短一下，就可以用下面的命令：<br>wget <a href="http://zi.mu/unix;sh" target="_blank" rel="external">http://zi.mu/unix;sh</a> ./unixbench.sh;<br>需要注意的是，这个脚本是为CentOS写的，安装程序用的是yum，因此在安装程序这一步，有些需要手动安装，若提示没有gcc，则可以输入如下命令安装：<br>sudo apt-get install gcc</p>
+</blockquote>
+<h2 id="二、ThinkPad-T61"><a href="#二、ThinkPad-T61" class="headerlink" title="二、ThinkPad T61"></a><a id="more"></a>二、ThinkPad T61</h2><p>先在自己的本本上跑一跑，有个基本的对比。本本是T1300（1.66G）/ 2G，输入第一个命令就直接开始测试了，结果如下：</p>
+<blockquote>
+<div id="_mcePaste">Benchmark Run: Sun Oct 10 2010 08:19:15 - 08:47:19</div>
+
+<div>1 CPU in system; running 1 parallel copy of tests</div>
+
+<div><br><br><div>Dhrystone 2 using register variables        6881623.3 lps   (10.0 s, 7 samples)</div>
+
+<div>Double-Precision Whetstone                     1468.8 MWIPS (10.2 s, 7 samples)</div>
+
+<div>Execl Throughput                               2533.9 lps   (29.9 s, 2 samples)</div>
+
+<div>File Copy 1024 bufsize 2000 maxblocks        275748.7 KBps  (30.0 s, 2 samples)</div>
+
+<div>File Copy 256 bufsize 500 maxblocks           88417.0 KBps  (30.0 s, 2 samples)</div>
+
+<div>File Copy 4096 bufsize 8000 maxblocks        641365.2 KBps  (30.0 s, 2 samples)</div>
+
+<div>Pipe Throughput                              480986.3 lps   (10.0 s, 7 samples)</div>
+
+<div>Pipe-based Context Switching                 165843.9 lps   (10.0 s, 7 samples)</div>
+
+<div>Process Creation                               7918.1 lps   (30.0 s, 2 samples)</div>
+
+<div>Shell Scripts (1 concurrent)                   3212.3 lpm   (60.0 s, 2 samples)</div>
+
+<div>Shell Scripts (8 concurrent)                    405.9 lpm   (60.1 s, 2 samples)</div>
+
+<div>System Call Overhead                         682537.7 lps   (10.0 s, 7 samples)</div>
+
+<div>System Benchmarks Index Values               BASELINE       RESULT    INDEX</div>
+
+<div>Dhrystone 2 using register variables         116700.0    6881623.3    589.7</div>
+
+<div>Double-Precision Whetstone                       55.0       1468.8    267.1</div>
+
+<div>Execl Throughput                                 43.0       2533.9    589.3</div>
+
+<div>File Copy 1024 bufsize 2000 maxblocks          3960.0     275748.7    696.3</div>
+
+<div>File Copy 256 bufsize 500 maxblocks            1655.0      88417.0    534.2</div>
+
+<div>File Copy 4096 bufsize 8000 maxblocks          5800.0     641365.2   1105.8</div>
+
+<div>Pipe Throughput                               12440.0     480986.3    386.6</div>
+
+<div>Pipe-based Context Switching                   4000.0     165843.9    414.6</div>
+
+<div>Process Creation                                126.0       7918.1    628.4</div>
+
+<div>Shell Scripts (1 concurrent)                     42.4       3212.3    757.6</div>
+
+<div>Shell Scripts (8 concurrent)                      6.0        405.9    676.5</div>
+
+<div>System Call Overhead                          15000.0     682537.7    455.0</div>
+
+<p></p></div><p></p>
+<div><span style="white-space: pre;"> </span>========</div>
+
+<div>System Benchmarks Index Score                                         <span style="color: #ff0000;"><strong>557.3</strong></span></div>
+
+</blockquote>
+<h2 id="三、Burst-NET-VPS-Package-1"><a href="#三、Burst-NET-VPS-Package-1" class="headerlink" title="三、Burst.NET VPS Package #1"></a>三、Burst.NET VPS Package #1</h2><p>先是在Burst.NET的Package #1。下载是正常的，但在执行性报gcc没找到，于是运行了一下：</p>
+<blockquote>
+<p>apt-get install gcc<br>安装完后就没啥问题了，运行时间大约半个多小时，得到了如下的结果，情况还不错：</p>
+<div id="_mcePaste">Benchmark Run: Sun Oct 10 2010 00:39:39 - 01:18:55</div>
+
+<div><br><br><div>1 CPU in system; running 1 parallel copy of tests</div>
+
+<div>Dhrystone 2 using register variables       11464718.2 lps   (10.0 s, 7 samples)</div>
+
+<div>Double-Precision Whetstone                     2153.4 MWIPS (10.0 s, 7 samples)</div>
+
+<div>Execl Throughput                               3356.0 lps   (29.3 s, 2 samples)</div>
+
+<div>File Copy 1024 bufsize 2000 maxblocks        358392.8 KBps  (30.0 s, 2 samples)</div>
+
+<div>File Copy 256 bufsize 500 maxblocks          107579.7 KBps  (30.0 s, 2 samples)</div>
+
+<div>File Copy 4096 bufsize 8000 maxblocks        762370.5 KBps  (31.1 s, 2 samples)</div>
+
+<div>Pipe Throughput                              675895.9 lps   (10.0 s, 7 samples)</div>
+
+<div>Pipe-based Context Switching                 227716.8 lps   (10.0 s, 7 samples)</div>
+
+<div>Process Creation                               9698.3 lps   (30.0 s, 2 samples)</div>
+
+<div>Shell Scripts (1 concurrent)                   2494.0 lpm   (60.0 s, 2 samples)</div>
+
+<div>Shell Scripts (8 concurrent)                    310.8 lpm   (60.0 s, 2 samples)</div>
+
+<div>System Call Overhead                         603895.0 lps   (10.0 s, 7 samples)</div>
+
+<div>System Benchmarks Index Values               BASELINE       RESULT    INDEX</div>
+
+<div>Dhrystone 2 using register variables         116700.0   11464718.2    982.4</div>
+
+<div>Double-Precision Whetstone                       55.0       2153.4    391.5</div>
+
+<div>Execl Throughput                                 43.0       3356.0    780.5</div>
+
+<div>File Copy 1024 bufsize 2000 maxblocks          3960.0     358392.8    905.0</div>
+
+<div>File Copy 256 bufsize 500 maxblocks            1655.0     107579.7    650.0</div>
+
+<div>File Copy 4096 bufsize 8000 maxblocks          5800.0     762370.5   1314.4</div>
+
+<div>Pipe Throughput                               12440.0     675895.9    543.3</div>
+
+<div>Pipe-based Context Switching                   4000.0     227716.8    569.3</div>
+
+<div>Process Creation                                126.0       9698.3    769.7</div>
+
+<div>Shell Scripts (1 concurrent)                     42.4       2494.0    588.2</div>
+
+<div>Shell Scripts (8 concurrent)                      6.0        310.8    518.1</div>
+
+<div>System Call Overhead                          15000.0     603895.0    402.6</div>
+
+<div>========</div>
+
+<p></p></div><p></p>
+<p><div id="_mcePaste">System Benchmarks Index Score                                         <span style="color: #ff0000;"><strong>659.6</strong></span></div><br>Burst.NET据说是便宜VPS中unixbunch跑分中很高的一类，看来也的确不假，在论坛上看到还有人Package #1竟然是<a href="http://www.hostloc.com/thread-13593-4-159.html" target="_blank" rel="external">双CPU护航</a>——据说是给老客户的优惠。</p>
+</blockquote>
+<h2 id="四、PhotonVPS-BEAN1"><a href="#四、PhotonVPS-BEAN1" class="headerlink" title="四、PhotonVPS BEAN1"></a>四、PhotonVPS BEAN1</h2><p>这个<a href="http://chensd.com/2010-03/photonvps-order.html">BEAN1 VPS</a>本来是10月4号到期，但<a href="http://chensd.com/tag/photonvps">PhotonVPS</a>的确是很够意思，都超了一个星期了，VPS还是可以照用不误。便宜VPS中，PhotonVPS看来的确是很地道的一个了。</p>
+<p>直接运行命令，提示了个“dpkg was interrupted”，于是只好运行了下面的命令：</p>
+<blockquote>
+<p>dpkg –configure -a<br>OK，再运行测试的命令，成功了。结果如下：</p>
+<div id="_mcePaste">————————————————————————</div>
+
+<div><br><br><div>Benchmark Run: Sun Oct 10 2010 10:45:16 - 12:44:40</div>
+
+<div>8 CPUs in system; running 8 parallel copies of tests</div>
+
+<div>Dhrystone 2 using register variables       22290114.7 lps   (10.0 s, 7 samples)</div>
+
+<div>Double-Precision Whetstone                    14931.2 MWIPS (10.3 s, 7 samples)</div>
+
+<div>Execl Throughput                               6916.5 lps   (29.3 s, 2 samples)</div>
+
+<div>File Copy 1024 bufsize 2000 maxblocks        637621.2 KBps  (30.0 s, 2 samples)</div>
+
+<div>File Copy 256 bufsize 500 maxblocks          217357.3 KBps  (30.0 s, 2 samples)</div>
+
+<div>File Copy 4096 bufsize 8000 maxblocks       1377232.8 KBps  (30.1 s, 2 samples)</div>
+
+<div>Pipe Throughput                             1977423.3 lps   (10.0 s, 7 samples)</div>
+
+<div>Pipe-based Context Switching                 458583.4 lps   (10.0 s, 7 samples)</div>
+
+<div>Process Creation                              15561.5 lps   (30.0 s, 2 samples)</div>
+
+<div>Shell Scripts (1 concurrent)                   8611.0 lpm   (60.0 s, 2 samples)</div>
+
+<div>Shell Scripts (8 concurrent)                   1201.9 lpm   (60.1 s, 2 samples)</div>
+
+<div>System Call Overhead                        1265721.4 lps   (10.0 s, 7 samples)</div>
+
+<div>System Benchmarks Index Values               BASELINE       RESULT    INDEX</div>
+
+<div>Dhrystone 2 using register variables         116700.0   22290114.7   1910.0</div>
+
+<div>Double-Precision Whetstone                       55.0      14931.2   2714.8</div>
+
+<div>Execl Throughput                                 43.0       6916.5   1608.5</div>
+
+<div>File Copy 1024 bufsize 2000 maxblocks          3960.0     637621.2   1610.2</div>
+
+<div>File Copy 256 bufsize 500 maxblocks            1655.0     217357.3   1313.3</div>
+
+<div>File Copy 4096 bufsize 8000 maxblocks          5800.0    1377232.8   2374.5</div>
+
+<div>Pipe Throughput                               12440.0    1977423.3   1589.6</div>
+
+<div>Pipe-based Context Switching                   4000.0     458583.4   1146.5</div>
+
+<div>Process Creation                                126.0      15561.5   1235.0</div>
+
+<div>Shell Scripts (1 concurrent)                     42.4       8611.0   2030.9</div>
+
+<div>Shell Scripts (8 concurrent)                      6.0       1201.9   2003.1</div>
+
+<div>System Call Overhead                          15000.0    1265721.4    843.8</div>
+
+<div>========</div>
+
+<div>System Benchmarks Index Score                                        <span style="color: #ff0000;"><strong>1618.7</strong></span></div>
+
+<p></p></div><br>PhotonVPS着实让我有些震惊，不过想想它八个核的CPU，也就坦然了。这也从性能上证明了PhotonVPS的确是个不赖的选择。<p></p>
+</blockquote>
+<p>从测试花的时间来算，最快的是我的本本，大约半个小时就跑完了，PhotonVPS最长，两个多小时还没有折腾完——的确是测试时间越长，得分越多——不亏待苦劳，还真是那么回事儿。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、UnixBench-5-1-2测试方法"><span class="toc-text">一、UnixBench 5.1.2测试方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、ThinkPad-T61"><span class="toc-text">二、ThinkPad T61</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、Burst-NET-VPS-Package-1"><span class="toc-text">三、Burst.NET VPS Package #1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、PhotonVPS-BEAN1"><span class="toc-text">四、PhotonVPS BEAN1</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2010-10/baidu-jingyan-domain-media-ehow.html" class="prev">&larr; 上一篇 百度经验——Demand Media的山寨</a>
+  
+
+  
+
+  
+    <a href="/2010-10/lxb.html" class="next">下一篇 兴奋！！！ &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1","myvm"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

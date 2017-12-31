@@ -1,0 +1,409 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="再见，AngularJS第一次使用 AngularJS 是在 2014 年，那时候正在做一个回合制的手游项目，编写后端的同时，也顺手编写了 GM 工具和 Web 页战斗模拟工具，为了方便，整个工具全部写在一个页面中。页面交互全部使用 jQuery 完成，写到中后期，已经被获取表单数据、绑定事件、修改 DOM 元素折腾得不行。于是尝试了 AngularJS ，整个人都感觉不一样了，完全是像写后...">
+  
+  <title>我的 2017 技术流水账 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2016-08/Safe-username-password-Login-System.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        打造一个安全的用户名密码登录系统
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>我的 2017 技术流水账</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2017年12月31日</span>
+      
+        <span id = "post-title-updated">修改于 2017年12月31日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/账单/">账单</a>
+      
+      </span>
+      
+    </p>
+    
+    <h3 id="再见，AngularJS"><a href="#再见，AngularJS" class="headerlink" title="再见，AngularJS"></a>再见，AngularJS</h3><p>第一次使用 AngularJS 是在 2014 年，那时候正在做一个回合制的手游项目，编写后端的同时，也顺手编写了 GM 工具和 Web 页战斗模拟工具，为了方便，整个工具全部写在一个页面中。页面交互全部使用 jQuery 完成，写到中后期，已经被获取表单数据、绑定事件、修改 DOM 元素折腾得不行。于是尝试了 AngularJS ，整个人都感觉不一样了，完全是像写后端代码一样写前端代码。尤其是双向数据绑定，实在是解决了 GM 工具等管理平台中的痛点——大量数量的处理。AngularJS 结合 Bootstrap，简直是编写管理后台的大杀器。</p>
+<p>可是随着单页应用的规模越来越大， AngularJS 的劣势也日益明显，虽然服务可以实现 JavaScript 代码的复用，但这还不够。指令虽然实现了 JavaScript 和 HTML 的复用，使用又太过繁琐。双向绑定虽然方便，但这种随意到处修改值的结果就是值变化了你也不知道是哪里改的。代码文件的组织，也只能按照 JavaScript / HTML / CSS 分别组织。文件打包最多用用 Browserify + Gulp。无论从本身的技术，还是从社区的环境来看， AngularJS 的确已经是过去的技术了。</p>
+<h3 id="你好，Vue"><a href="#你好，Vue" class="headerlink" title="你好，Vue"></a>你好，Vue</h3><p>去年的时候，已经开始陆续试用 React 和 Vue 1.x ，React 的热更新、彻底的组件化、完整的 ES6 支持，实在是让人兴奋。不过我始终没有习惯 JSX ，而 Vue 1.x 的革命性又稍显不足。但 Vue 2.0 的面世，彻底征服了我，博取众家之长，新的生态工具的支持，在简单的尝试之后，很快便投入了 Vue 2 的怀抱。现在的管理后台，基本都是 Vue + Element-ui 的组合。</p>
+<h3 id="干净利落，ES6"><a href="#干净利落，ES6" class="headerlink" title="干净利落，ES6"></a>干净利落，ES6</h3><p>转移到 Vue 2 便可以在整个项目中使用 ES6 了。最喜欢的还是简洁的箭头函数和放心使用的局部变量，再加上 eslint 的强制语法检查，让所有人都编写格式一致的代码。唯一不爽的就是我喜欢的 <code>&#39;sid&#39; === name</code> 的写法要放弃了。</p>
+<h3 id="快快快，Elasticsearch"><a href="#快快快，Elasticsearch" class="headerlink" title="快快快，Elasticsearch"></a>快快快，Elasticsearch</h3><p>Elasticsearch 的确是所有的后端开发人员都该试一试的技术，让人震惊的速度，与生俱来的备份机制，几乎完全零配置开箱即用， DSL 可能相对 SQL 要复杂一些，但入门也还好。</p>
+<p>有了 Elasticsearch ，与数据存储和统计相关的事情，几乎都不再是问题。在 MySQL 中有了几百万数据，想要流畅的查询统计，就得开始规划字段建立索引了，在 Elasticsearch 中完全不用考虑，更何况它的统计功能经甩 MySQL 无数条街。还不提 Elasticsearch 最强大的检索功能。</p>
+<p>Elasticsearch 是今年让我最有幸福感的技术。</p>
+<h3 id="浅尝辙止，Python-Go"><a href="#浅尝辙止，Python-Go" class="headerlink" title="浅尝辙止，Python / Go"></a>浅尝辙止，Python / Go</h3><p>前不久一个项目，需要获取图片 hash，查了一下 Python 这方面的库比较丰富，于是看了一下 Python 的语法就上手了，花了半天工夫折腾出来。后来看到还有 Go 的版本，便也试了一下。运行结果有点震惊，Go 比 Python 快了至少 5 倍，果然 CPU 密集的事情，还是编译语言比较拿手。Go 的 defer 和强制代码格式 gofmt，给我留下了深刻的印象。感觉是时候开始一个新的后端语言了。</p>
+<h3 id="半途而废，Docker"><a href="#半途而废，Docker" class="headerlink" title="半途而废，Docker"></a>半途而废，Docker</h3><p>原计划是准备放弃 VirtualBox，不过 Docker 并不能方便的执行各种 linux 命令，它更偏重于代码的运行环境，而我现在又基本不再掌控后端，所以对我的意义已经不大。Docker 最终便没有用到工作之中。</p>
+<h3 id="Github-Desktop"><a href="#Github-Desktop" class="headerlink" title="Github Desktop"></a>Github Desktop</h3><p>SourceTree 现在是越来越慢了，而且经常需要打开关闭项目 Tab 之后才能发现文件修改，启动也很慢。终于我开始了新的 Git GUI 工具的选择，最没有抱希望的 Github Desktop 却是我最终的选择。超出想像的快，简洁的界面，虽然不支持 ssh key 登陆，功能也比较简陋，但只要速度快，小问题是可以忍受的。</p>
+<h3 id="Coding-NET"><a href="#Coding-NET" class="headerlink" title="Coding.NET"></a>Coding.NET</h3><p>已经用了两三年 Coding.NET 了，以前码币容易挣的时候，还换了件 T 恤，开始是个人使用，后来推广到团队使用，出了企业版后，还动员公司也付了费。但现在免费用户取消了 Coding Pages 自定义域名功能，后来还限制五个私有项目，这让 Coding.NET 成为了另一个被放弃的服务。</p>
+<p>2017 的最后一天，用 Gogs 搭建了自己的 Git 服务，花 6 块钱把 n 年前的花生壳账号做了个认证，开始了自建之路。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#再见，AngularJS"><span class="toc-text">再见，AngularJS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#你好，Vue"><span class="toc-text">你好，Vue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#干净利落，ES6"><span class="toc-text">干净利落，ES6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#快快快，Elasticsearch"><span class="toc-text">快快快，Elasticsearch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#浅尝辙止，Python-Go"><span class="toc-text">浅尝辙止，Python / Go</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#半途而废，Docker"><span class="toc-text">半途而废，Docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Github-Desktop"><span class="toc-text">Github Desktop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Coding-NET"><span class="toc-text">Coding.NET</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2016-08/Safe-username-password-Login-System.html" class="next">下一篇 打造一个安全的用户名密码登录系统 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1","myvm"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

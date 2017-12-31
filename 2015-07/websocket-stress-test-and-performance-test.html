@@ -1,0 +1,430 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="相对于短连接应用，长连接应用的测试要麻烦得多——尤其是性能和压力测试。此前，甚至从来没有给任何一个上线的 WebSocket 应用做过这方面的测试，前两天，看到有人在 SegmentFault 上问这方面的问题，刚好又有空，于是想着，还是来查查这方面的资料吧。在 Github 上一搜，还真有现成的工具，名字很简单，直接就叫websocket-bench，
+websocket-bench 是个...">
+  
+  <title>WebSocket的性能与压力测试 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2015-09/MEAN-Web-Development-CN-published.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        译作《 MEAN Web 开发》中文版发行
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2015-06/Angular-New-Router.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Angular2路由模块简介
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>WebSocket的性能与压力测试</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2015年7月30日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月27日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Node-js/">Node.js</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>相对于短连接应用，长连接应用的测试要麻烦得多——尤其是性能和压力测试。此前，甚至从来没有给任何一个上线的 WebSocket 应用做过这方面的测试，前两天，看到有人在 <a href="http://segmentfault.com/q/1010000003028043" target="_blank" rel="external">SegmentFault 上问</a>这方面的问题，刚好又有空，于是想着，还是来查查这方面的资料吧。在 Github 上一搜，还真有现成的工具，名字很简单，直接就叫<a href="https://github.com/M6Web/websocket-bench" target="_blank" rel="external">websocket-bench</a>，</p>
+<p>websocket-bench 是个用 Node.js 编写的命令行工具，可以对使用 Socket.io、<a href="https://github.com/faye/faye" target="_blank" rel="external">faye</a>、<a href="https://github.com/primus/primus" target="_blank" rel="external">Primus</a>、<a href="https://github.com/tavendo/WAMP" target="_blank" rel="external">WAMP</a> 编写的长连接应用进行性能和压力测试，用法和参数与 ab 差不多，多了一个指定连接成功后进行的操作的定义。</p>
+<a id="more"></a>
+<h3 id="websocket-bench-安装"><a href="#websocket-bench-安装" class="headerlink" title="websocket-bench 安装"></a>websocket-bench 安装</h3><p>需要使用 npm 以全局的方式来安装 websocket-bench，当然要用阿里提供的<a href="http://npm.taobao.org" target="_blank" rel="external">]福利服务器</a>，如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install -g websocket-bench --registry=http://registry.npm.taobao.org</div></pre></td></tr></table></figure>
+<h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p>这里以在 CentOS 6.5 上进行测试为便进行说明。首先要修改一下文件打开数，默认是1024，修改为一个比较大的值就行，总共65535个端口，我们测试也不会用太大的并发，websocket-bench 推荐设置的是 60000 ，命令如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">ulimit</span> -n 60000</div></pre></td></tr></table></figure>
+<p>websocket-bench 的参数与 ab 基本一致，像这样</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">websocket-bench <span class="_">-a</span> 300 -c 29 http://localhost:8100 -o opt.log</div></pre></td></tr></table></figure>
+<p><code>-a</code> 参数用于指定总共的测试次数，<code>-c</code>参数指定并发连接数。我这里测试的是一个 Socket.io 的服务器，所以不需要使用 <code>-t</code>参数指定类型，如果是其它的，则需要使用 <code>engine.io</code> <code>faye</code> <code>primus</code> <code>wamp</code> 进行指定。运行完成后，会打印报告，报告分两小部分，前一部分是以 <code>-c</code> 指定的数量组织的表格，后一部分是整个测试的统计，数据包括错误数和消耗时间。</p>
+<p>使用<code>-o</code>参数可以将报告保存到单独的文件中。</p>
+<h3 id="使用-generator-来自定义测试逻辑"><a href="#使用-generator-来自定义测试逻辑" class="headerlink" title="使用 generator 来自定义测试逻辑"></a>使用 generator 来自定义测试逻辑</h3><p>长连接压力测试麻烦的一部分，就在于连接完成后需要完成一定的交互操作，websocket-bench 通过 <code>generator</code> 文件来方便测试人员编写连接上服务器后所需要执行的操作。下面是我为了简单的测试一个2D地图移动游戏的简单测试文件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">  <span class="comment">//可选，在建立连接之前会执行</span></div><div class="line">  beforeConnect: <span class="function"><span class="keyword">function</span>(<span class="params">client</span>)</span>&#123;</div><div class="line">  &#125;,</div><div class="line">  <span class="comment">//必选，建立连接后所要做的事情</span></div><div class="line">  onConnect: <span class="function"><span class="keyword">function</span>(<span class="params">client, done</span>)</span>&#123;</div><div class="line">    <span class="comment">//向服务器发送消息</span></div><div class="line">    <span class="comment">//client 为客户端的连接实例</span></div><div class="line">    client.emit(<span class="string">'setTitle'</span>, &#123;<span class="attr">title</span>: <span class="string">'bench_'</span> + randomNumber(), <span class="attr">pVer</span>: <span class="number">2</span>&#125;);</div><div class="line">    <span class="comment">//回调函数</span></div><div class="line">    done();</div><div class="line">  &#125;,</div><div class="line">  <span class="comment">//必选，向服务器民送消息时运行的代码</span></div><div class="line">  sendMessage: <span class="function"><span class="keyword">function</span>(<span class="params">client, done</span>) </span>&#123;</div><div class="line">    client.emit(<span class="string">'moveTo'</span>, &#123;<span class="attr">x</span>: randomNumber(<span class="number">3500</span>), <span class="attr">y</span>: randomNumber(<span class="number">3500</span>)&#125;);</div><div class="line">    done();</div><div class="line">  &#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">randomNumber</span>(<span class="params">max</span>)</span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()* (max || <span class="number">100000</span>));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编写完成后，在运行 websocket-bench 时，使用 <code>-g</code> 参数指定 generator 文件即可。</p>
+<p>另外，测试的时候，可以使用 <a href="http://iptraf.seul.org/" target="_blank" rel="external">iptraf</a> 工具来看看带宽的占用情况。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#websocket-bench-安装"><span class="toc-text">websocket-bench 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本使用"><span class="toc-text">基本使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-generator-来自定义测试逻辑"><span class="toc-text">使用 generator 来自定义测试逻辑</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2015-09/MEAN-Web-Development-CN-published.html" class="prev">&larr; 上一篇 译作《 MEAN Web 开发》中文版发行</a>
+  
+
+  
+
+  
+    <a href="/2015-06/Angular-New-Router.html" class="next">下一篇 Angular2路由模块简介 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1","myvm"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

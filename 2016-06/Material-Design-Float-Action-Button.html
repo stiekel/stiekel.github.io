@@ -1,0 +1,435 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="Material Design 的悬浮操作按钮虽然会挡住一部分页面内容，但的确提供了一种不错的表现操作按钮的思路。手里一个微信的项目正好准备试试用这种风格来表现创建一类的操作。关于 Material Design 的按钮介绍，可以看这里。
+这里实现一个类似于 Gmail App 中的新建邮件按钮风格类似的样式，为了简便，就直接使用一个样式来完成，元素的 HTML 如下：
+1&lt;div c...">
+  
+  <title>CSS 模拟实现 Material Design 样式的悬浮操作按钮 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2016-06/hexo-theme-guide.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Hexo 主题开发指南
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2016-05/EncloseJS.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        利用 EncloseJS 来打包、加密和保护 Node.js 代码
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>CSS 模拟实现 Material Design 样式的悬浮操作按钮</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2016年6月5日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月27日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/随手记/">随手记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/前端/">前端</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>Material Design 的悬浮操作按钮虽然会挡住一部分页面内容，但的确提供了一种不错的表现操作按钮的思路。手里一个微信的项目正好准备试试用这种风格来表现创建一类的操作。关于 Material Design 的按钮介绍，可以看<a href="https://www.google.com/design/spec/components/buttons.html#buttons-button-types" target="_blank" rel="external">这里</a>。</p>
+<p>这里实现一个类似于 Gmail App 中的新建邮件按钮风格类似的样式，为了简便，就直接使用一个样式来完成，元素的 HTML 如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"float-action-button"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="按钮的定位"><a href="#按钮的定位" class="headerlink" title="按钮的定位"></a>按钮的定位</h3><p>悬浮操作按钮一般是位于屏幕的右下方，并且位置不随网页的滚动而变化。这可以通过设置 <code>position</code> 为 <code>fixed</code> 来实现，位置则通过 <code>bottom</code> 和 <code>right</code> 来指定。另外还修改一下光标的指针样式：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.float-action-button</span> &#123;</div><div class="line">  <span class="attribute">position</span>: fixed;</div><div class="line">  <span class="attribute">right</span>: <span class="number">20px</span>;</div><div class="line">  <span class="attribute">bottom</span>: <span class="number">20px</span>;</div><div class="line">  <span class="attribute">cursor</span>: pointer;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="按钮的颜色与形状"><a href="#按钮的颜色与形状" class="headerlink" title="按钮的颜色与形状"></a>按钮的颜色与形状</h3><p>这里的颜色包括四个，分别是：</p>
+<ul>
+<li>按钮的主体背景色</li>
+<li>按钮的边框颜色</li>
+<li>按钮中铅笔图标的铅笔颜色</li>
+<li>按钮的阴影色</li>
+</ul>
+<p>其中前两个颜色类似，而主体色要比边框色稍微浅一点。如果你有颜色选择困难症，可以直接使用 <a href="https://www.google.com/design/spec/style/color.html#" target="_blank" rel="external">Material Design 颜色推荐表</a>，或者试试这两个扁平化设计颜色推荐网站：<a href="http://www.flatuicolorpicker.com/" target="_blank" rel="external">flatuicolorpicker.com</a>、<a href="https://flatuicolors.com/" target="_blank" rel="external">flatuicolors.com</a>。我用的是 flatuicolorpicker 上的颜色。</p>
+<p>圆形通过设置 <code>border-radius</code> 可以实现，其值大于 <code>50%</code> 时可以表现为圆形。这里借助 <code>padding</code> 来设置按钮的大小。</p>
+<p>设置颜色和形状如下：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.float-action-button</span> &#123;</div><div class="line">  <span class="attribute">background-color</span>: <span class="number">#D91E18</span>;</div><div class="line">  <span class="attribute">color</span>: <span class="number">#F2F1EF</span>;</div><div class="line">  <span class="attribute">border-radius</span>: <span class="number">50%</span>;</div><div class="line">  <span class="attribute">padding</span>: <span class="number">30px</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="按钮的图标"><a href="#按钮的图标" class="headerlink" title="按钮的图标"></a>按钮的图标</h3><p>按钮中有一个铅笔的图标，这里为了简单，直接使用一个图片来实现。目前发现的最丰富的图标资源站，当然是 <a href="http://iconfont.cn/" target="_blank" rel="external">iconfont</a> ，搜索 <code>pencil</code> 可以找到 258 个图标，挑一个就行。但要注意，因为背景色为深色，为了使铅笔看起来相对明显一点，最好选择图标中着色面积大的。鼠标指向图标可以显示下载按钮，着色要与背景色形成对象，使用白色，或者浅灰，这里直接使用 iconfont 推荐的 <code>#ecf0f1</code> 。</p>
+<p>背景图要设置为居中，不重复。大小为整个按钮大小的一半——将 <code>background-size</code> 设置为 <code>padding</code> 值即可。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.float-action-button</span> &#123;</div><div class="line">  <span class="attribute">background-image</span>: <span class="built_in">url</span>(<span class="string">'./pencil.png'</span>);</div><div class="line">  <span class="attribute">background-repeat</span>: no-repeat;</div><div class="line">  <span class="attribute">background-position</span>: center;</div><div class="line">  <span class="attribute">background-size</span>: <span class="number">30px</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="按钮的边框"><a href="#按钮的边框" class="headerlink" title="按钮的边框"></a>按钮的边框</h3><p>按钮有一个很细的边框，颜色相对背景色要稍深一点，通过 <code>border</code> 来设置：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.float-action-button</span> &#123;</div><div class="line">  <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#CF000F</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="按钮的阴影"><a href="#按钮的阴影" class="headerlink" title="按钮的阴影"></a>按钮的阴影</h3><p>CSS 的阴影有两种， <code>text-shadow</code> 和 <code>box-shadow</code> ，前者用于指定文字阴影，这里要使用 <code>box-shadow</code>，它典型的值有五个，分别是x轴偏移、y轴偏移、blur 模糊的半径、发散半径、阴影颜色。悬浮操作按钮只有 y 轴偏移。而且颜色很浅。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.float-action-button</span> &#123;</div><div class="line">  <span class="attribute">box-shadow</span>: <span class="number">0px</span> <span class="number">3px</span> <span class="number">9px</span> <span class="number">2px</span> <span class="number">#BFBFBF</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="悬停样式"><a href="#悬停样式" class="headerlink" title="悬停样式"></a>悬停样式</h3><p>当鼠标经过和点击之后，要模板一个按钮按下的效果，直接通过修改背景色和加大阴影 y 轴偏移即可，如下：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.float-action-button</span><span class="selector-pseudo">:hover</span> &#123;</div><div class="line">  <span class="attribute">background-color</span>: <span class="number">#F22613</span>;</div><div class="line">  <span class="attribute">box-shadow</span>: <span class="number">0px</span> <span class="number">6px</span> <span class="number">9px</span> <span class="number">2px</span> <span class="number">#BFBFBF</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h3><p>请参见 <a href="/code/floatActionButton.html">Demo</a>。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#按钮的定位"><span class="toc-text">按钮的定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#按钮的颜色与形状"><span class="toc-text">按钮的颜色与形状</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#按钮的图标"><span class="toc-text">按钮的图标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#按钮的边框"><span class="toc-text">按钮的边框</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#按钮的阴影"><span class="toc-text">按钮的阴影</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#悬停样式"><span class="toc-text">悬停样式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最终效果"><span class="toc-text">最终效果</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2016-06/hexo-theme-guide.html" class="prev">&larr; 上一篇 Hexo 主题开发指南</a>
+  
+
+  
+
+  
+    <a href="/2016-05/EncloseJS.html" class="next">下一篇 利用 EncloseJS 来打包、加密和保护 Node.js 代码 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1","myvm"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

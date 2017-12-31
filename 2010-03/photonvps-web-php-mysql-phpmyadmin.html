@@ -1,0 +1,430 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="买VPS的重要目的之一，就是利用它来搭网站，搭网站的前提就是先要在VPS上部署web服务器环境。在下面的内容中，将以Ubuntu 8.10系列为例，进行环境部署的示例。如果你不是Ubuntu，而又想继续参考这个教程，可以在VPS控制面板中Re-Install OS一下，并选择Debian / Ubuntu系列系统。目的是搭建一个可以运行WordPress的环境，即：
+   支持PHP
+   ...">
+  
+  <title>PhotonVPS系列之五：VPS上搭建Web服务器环境 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2010-03/google-com-ncr-gfw.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Google.com/ncr，你好！
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2010-03/ncre-2-access-200909-test-papers.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        2009年9月计算机二级Access考试真题下载（无水印扫描版）
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>PhotonVPS系列之五：VPS上搭建Web服务器环境</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2010年3月22日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月27日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/建站相关/">建站相关</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/Blog/">Blog</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/PhotonVPS/">PhotonVPS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/VPS/">VPS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/wordpress/">wordpress</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>买VPS的重要目的之一，就是利用它来搭网站，搭网站的前提就是先要在VPS上部署web服务器环境。在下面的内容中，将以Ubuntu 8.10系列为例，进行环境部署的示例。如果你不是Ubuntu，而又想继续参考这个教程，可以在<a href="http://chensd.com/2010-03/photonvps-webmin-control-panel.html">VPS控制面板</a>中Re-Install OS一下，并选择Debian / Ubuntu系列系统。目的是搭建一个可以运行WordPress的环境，即：</p>
+<div id="_mcePaste"><br><br><em>   支持PHP
+</em>   支持MySQL<br></div><br><div id="_mcePaste"><a id="more"></a></div><br><div>对于PhotonVPS来讲，初始化的情况下就已经安装Apache2，当直接打开其IP时，可以看见Apache2的默认页面，显示有It Works!的index.html。这样对于我们部署web环境来讲，就少了一个安装web服务软件的过程。</div><br><div id="_mcePaste">首先<a href="http://chensd.com/2010-03/photonvps-ssh-control-panel.html">用SSH登录到VPS</a>。在Windows环境下，运行<a href="http://www.vpser.net/uncategorized/putty-ssh-linux-vps.html" target="_blank" rel="external">PuTTY</a>，如果是在Linux环境下，直接在命令行中输入ssh root@VPS IP即可，然后按照提示输入密码。</div><br><div id="_mcePaste">在第一次配置VPS时，登录的用户都是root，所以我们在运行的时候，可以不用在安装命令前加sudo。登录后第一步，将你的VPS系统升级到最新版，依次运行如下命令</div><br><pre>apt-get update<br>apt-get dist-upgrade</pre><br><div id="_mcePaste">PhotonVPS的速度还是不错的，我的这个“栋梁一号”套餐（Beam 1），运行apt-get命令时下载的速度可以达到2MB/s。运行这两个命令的过程中，会提示你是否继续，当然要输入y来确认。</div><br><div id="_mcePaste">升级到最新后，就可以开始安装其它的软件了，运行以下命令：</div><br><pre>apt-get install php5-mysql libapache2-mod-php5 mysql-server</pre><br><div id="_mcePaste">这个命令可以使得目前的纯html环境支持php，并安装上MySQL的相关环境。在命令运行的过程中，会提示你输入MySQL的密码，输入并记下即可。再运行以下的命令：</div><br><pre>apt-get install phpmyadmin</pre><br><div id="_mcePaste">用以安装PHPmyAdmin，安装这个软件可以方便快捷的完成PHP与Apache2相关的配置工作。安装过程中，会提示你输入php需要支持的环境，利用空格键选择Apache2，再用TAB键选择到OK，最后回车即可。</div><br><div id="_mcePaste">安装完以上环境，基本上就可以使VPS支持php和MySQL了，接下来，我们可以测试一下，运行一个iProber PHP页面，来测试一下我们的环境是否搭建成功。依次输入以下命令，务必注意所有命令的大小写：</div><br><pre>cd /var/www/　　　/进入apache2的默认目录<br>mkdir iProber　　　/新建一个目录，用于存放iProber PHP工具。<br>cd iProber　　　　/进入iProber目录<br>wget <a href="http://chensd.com/down/iProber.zip">http://chensd.com/down/iProber.zip</a>　　　　　/下载iProber软件<br>unzip iProber.zip　/解压iProber</pre><br><div id="_mcePaste">然后，在浏览器输入<a href="http://你的IP或者域名/iProber/iProber.php" target="_blank" rel="external">http://你的IP或者域名/iProber/iProber.php</a></div><br><div id="_mcePaste">例如我输入的是：<a href="http://chensd.com/iProber/iProber.php，一定要注意大小写。可以看到以下页面：">http://chensd.com/iProber/iProber.php，一定要注意大小写。可以看到以下页面：</a></div><br><div><a href="/upfile/2010/03/photonvps-iprober.jpg"><img src="/upfile/2010/03/photonvps-iprober.jpg" alt="" title="photonvps-iprober"></a></div><br><div id="_mcePaste">其中，可以看到“PHP组件支持”一项，其中就包括刚刚已经安装的MySQL。</div><br><div id="_mcePaste">打完收功！</div><br><div>注：本文借鉴了<a href="http://hexun.com/11463531/default.html" target="_blank" rel="external">kingsun_he</a>的<a href="http://11463531.blog.hexun.com/37686444_d.html" target="_blank" rel="external">这篇文章</a>。</div><br><div><span style="font-family: Arial; line-height: 22px; font-size: 12px; color: #333333;">以下内容为<a href="http://woshao.com" target="_blank" rel="external">我烧网</a>博客验证内容：woshao_6074f4b7c947f59bb9e29bbf40fafc9c</span></div>
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2010-03/google-com-ncr-gfw.html" class="prev">&larr; 上一篇 Google.com/ncr，你好！</a>
+  
+
+  
+
+  
+    <a href="/2010-03/ncre-2-access-200909-test-papers.html" class="next">下一篇 2009年9月计算机二级Access考试真题下载（无水印扫描版） &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1","myvm"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

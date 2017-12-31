@@ -1,0 +1,461 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="Stiekel">
+  
+  
+  
+  
+    <meta name="description" content="最近由于工作上的原因，需要开发一套服务器性能的监控工具，主要是一些同架构同软件配置的服务器。考虑到最近用php比较多，随即决定使用php来实现。主要需要实现的部分功能如下：
+
+1、系统状态，如cpu / 内存 / swap等数据；
+2、MySQL的性能与运行状态；其它主要是配合性的数据存储以及可视化。">
+  
+  <title>利用PHP实现对服务器性能与状态的监控 [ 不可能不确定 ]</title>
+  
+    <link rel="alternate" href="/atom.xml" title="不可能不确定">
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2011-09/php-source-convert-gbk-big5-to-utf8.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        PHP源码编码与转换：搞定首行为空和“锘匡豢”
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2011-07/js-css-support-in-webbrowser-of-sliverlight-for-windows-phone.html">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Sliverlight for WP7 中WebBrowser控件对js和css的支持性总结
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg"/>
+          <div id="homelink">不可能不确定</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>利用PHP实现对服务器性能与状态的监控</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2011年8月31日</span>
+      
+        <span id = "post-title-updated">修改于 2017年6月27日</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/编程杂记/">编程杂记</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/php/">php</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/MySQL/">MySQL</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>最近由于工作上的原因，需要开发一套服务器性能的监控工具，主要是一些同架构同软件配置的服务器。考虑到最近用php比较多，随即决定使用php来实现。主要需要实现的部分功能如下：</p>
+<ul>
+<li>1、系统状态，如cpu / 内存 / swap等数据；</li>
+<li>2、MySQL的性能与运行状态；<br>其它主要是配合性的数据存储以及可视化。<a id="more"></a></li>
+</ul>
+<h3 id="1、使用SNMP实现对系统状态的抓取"><a href="#1、使用SNMP实现对系统状态的抓取" class="headerlink" title="1、使用SNMP实现对系统状态的抓取"></a>1、使用SNMP实现对系统状态的抓取</h3><p>SNMP的确是一个很方便的协议，用它可以获取网络设备几乎所有的信息，Linux和Win都可以很好的支持。MIB是一个纷杂的数据库，通过筛选可以获取我们所需要的信息。</p>
+<p>PHP5对snmp协议v2有较好的支持。为了方便，可以获取一大组数据，将其存储到一个数组中，再从数组中挑选需要的数据。snmp2_real_walk便可以满足这个需求。它的用法如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$status = @snmp2_real_walk($host, $community, &amp;quot;<span class="number">.1</span><span class="number">.3</span><span class="number">.6</span><span class="number">.1</span><span class="number">.4</span><span class="number">.1</span><span class="number">.2021</span>&amp;quot;,<span class="number">10</span>,<span class="number">5</span>);</div></pre></td></tr></table></figure>
+<ul>
+<li>$host是目标主机</li>
+<li>$community是其相应的SNMP community code</li>
+<li>“1.3.6.1.4.1.2021”是我们要获取的数据树</li>
+<li>10是超时时间（秒）</li>
+<li>5是失败后的重试次数<br>为了防止出错后报错，使用@强行关闭报错。</li>
+</ul>
+<p>获取的结果存储在$status里，之后便可以从$status中定位我们所需要的数据了。MIB可能是用数字组织的，也有可能是一堆名字，具体可以在<a href="http://net-snmp.sourceforge.net/docs/mibs/ucdavis.html" target="_blank" rel="external">这里</a>进行查询。需要注意，获取的结果中，值和结果是混合在一起的，需要对字符串进行一定的截取。下面是几个比较常用的值：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$host_status[<span class="string">'uptime_1min'</span>]         = (float)@substr($status[<span class="string">'UCD-SNMP-MIB::laLoad.1'</span>], <span class="number">9</span>);</div><div class="line">$host_status[<span class="string">'uptime_5min'</span>]         = (float)@substr($status[<span class="string">'UCD-SNMP-MIB::laLoad.2'</span>], <span class="number">9</span>);</div><div class="line">$host_status[<span class="string">'uptime_15min'</span>]        = (float)@substr($status[<span class="string">'UCD-SNMP-MIB::laLoad.3'</span>], <span class="number">9</span>);</div><div class="line">$host_status[<span class="string">'user_cpu'</span>]            = (int)@substr($status[<span class="string">'UCD-SNMP-MIB::ssCpuUser.0'</span>], <span class="number">9</span>);</div><div class="line">$host_status[<span class="string">'system_cpu'</span>]          = (int)@substr($status[<span class="string">'UCD-SNMP-MIB::ssCpuSystem.0'</span>], <span class="number">9</span>);</div><div class="line">$host_status[<span class="string">'idle_cpu'</span>]            = (int)@substr($status[<span class="string">'UCD-SNMP-MIB::ssCpuIdle.0'</span>], <span class="number">9</span>);</div><div class="line">$host_status[<span class="string">'total_swap'</span>]          = (int)@substr($status[<span class="string">'UCD-SNMP-MIB::memTotalSwap.0'</span>], <span class="number">9</span>);</div><div class="line">$host_status[<span class="string">'available_swap'</span>]      = (int)@substr($status[<span class="string">'UCD-SNMP-MIB::memAvailSwap.0'</span>], <span class="number">9</span>);</div><div class="line">$host_status[<span class="string">'total_ram'</span>]           = (int)@substr($status[<span class="string">'UCD-SNMP-MIB::memTotalReal.0'</span>], <span class="number">9</span>);</div><div class="line">$host_status[<span class="string">'used_ram'</span>]            = $host_status[<span class="string">'total_ram'</span>] - (int)@substr($status[<span class="string">'UCD-SNMP-MIB::memAvailReal.0'</span>], <span class="number">9</span>);</div><div class="line">$host_status[<span class="string">'cached_memory'</span>]       = (int)@substr($status[<span class="string">'UCD-SNMP-MIB::memCached.0'</span>], <span class="number">9</span>);</div></pre></td></tr></table></figure>
+<p>SNMP采用的是<strong>UDP协议</strong>，因此数据获取可能会失败，可以考虑在失败之后重试几次。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$i = <span class="number">0</span>;</div><div class="line">$status = <span class="keyword">array</span>();</div><div class="line"><span class="keyword">do</span> &#123;</div><div class="line">    $i ++;</div><div class="line">    $status = @snmp2_real_walk($host, $community, &amp;quot;<span class="number">.1</span><span class="number">.3</span><span class="number">.6</span><span class="number">.1</span><span class="number">.4</span><span class="number">.1</span><span class="number">.2021</span>&amp;quot;,<span class="number">10</span>,<span class="number">5</span>);</div><div class="line">&#125; <span class="keyword">while</span>(!(count($status) != <span class="number">0</span> <span class="keyword">OR</span> $i &gt;= <span class="number">3</span>));</div></pre></td></tr></table></figure>
+<h3 id="2、获取MySQL数据库的状态数据"><a href="#2、获取MySQL数据库的状态数据" class="headerlink" title="2、获取MySQL数据库的状态数据"></a>2、获取MySQL数据库的状态数据</h3><p>获取MySQL的状态较简单，只需要运行下面这个查询即可：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SHOW</span> <span class="keyword">GLOBAL</span> <span class="keyword">STATUS</span></div></pre></td></tr></table></figure>
+<p>这个查询的结果也非常丰富，只需要从中挑选需要的即可。例如下面的例子获取了若干查询的数量：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">$db = @<span class="keyword">new</span> mysqli($host, $mysql_user, $mysql_pwd);</div><div class="line">$result = @$db-&gt;query(&amp;quot;SHOW <span class="keyword">GLOBAL</span> STATUS&amp;quot;);</div><div class="line">$status = <span class="keyword">array</span>();</div><div class="line"><span class="keyword">if</span>($result) &#123;</div><div class="line">    <span class="keyword">while</span>($temp = $result-&gt;fetch_assoc()) &#123;</div><div class="line">        <span class="keyword">switch</span>($temp[<span class="string">'Variable_name'</span>]) &#123;</div><div class="line">            <span class="keyword">case</span> &amp;quot;Com_select&amp;quot;:</div><div class="line">            <span class="keyword">case</span> &amp;quot;Com_insert&amp;quot;:</div><div class="line">            <span class="keyword">case</span> &amp;quot;Com_delete&amp;quot;:</div><div class="line">            <span class="keyword">case</span> &amp;quot;Com_update&amp;quot;:</div><div class="line">            <span class="keyword">case</span> &amp;quot;Com_change_db&amp;quot;:</div><div class="line">                $status[$temp[<span class="string">'Variable_name'</span>]] = $temp[<span class="string">'Value'</span>];</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">default</span>:</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    $db-&gt;close();</div><div class="line">    <span class="keyword">return</span> $status;</div><div class="line">&#125; <span class="keyword">else</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div></pre></td></tr></table></figure>
+<p>唯一需要注意的是，上述值是MySQL服务启动之后的<strong>累加值</strong>，所以说只要MySQL不重启，这些值是递增的。而在实际分析或者显示时，一般是需要某个时间段内的值，有如下两个思路来应对：</p>
+<ul>
+<li>1、获取最新一次的数据时，从数据库中查询到上次获取的值，二者相减，即可得到两次查询内的数据值，这个实现时还需要保存一个额外的临时值以用于作为减数，否则会失去“坐标”；</li>
+<li>2、将最新获取的值存储在数据库中，在显示或者读取时，再进行相应的减法操作；<br>个人比较推荐采用第二种方法，即在使用时再对数据进行处理，这至少遵循了“保存原始数据”这一原则，而且需求是有可能变化的。</li>
+</ul>
+<h3 id="3、定期执行PHP脚本获取状态值"><a href="#3、定期执行PHP脚本获取状态值" class="headerlink" title="3、定期执行PHP脚本获取状态值"></a>3、定期执行PHP脚本获取状态值</h3><p>PHP本身无法实现定时运行这一功能，因此只有借助其它手段，比如，Linux中的crontab，按设定的规则和时间在后台执行，只需要将定时执行的内容换成命令行下的PHP脚本即可。</p>
+<p>下面的这一段PHP可以实现从命令行或URL接受参数并执行相关操作的功能</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">$action = <span class="string">''</span>;</div><div class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">'action'</span>]))</div><div class="line">    $action = $_GET[<span class="string">'action'</span>];</div><div class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($argv[<span class="number">1</span>]))</div><div class="line">    $action = $argv[<span class="number">1</span>];</div><div class="line"><span class="keyword">switch</span>($action) &#123;</div><div class="line">    <span class="keyword">case</span> &amp;quot;snmp&amp;quot;:</div><div class="line">        refresh_host_status_by_snmp();</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">case</span> get_option(&amp;quot;refresh_frequency&amp;quot;) . &amp;quot;min&amp;quot;:</div><div class="line">        refresh_order_count();</div><div class="line">        refresh_service_status();</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">case</span> &amp;quot;<span class="number">1</span>day&amp;quot;:</div><div class="line">        refresh_uptime_yesterday_in_service_list();</div><div class="line">        save_all_tasks_one_day_details();</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">default</span>:</div><div class="line">        <span class="keyword">echo</span> &amp;quot;help content here.\n&amp;quot;;</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>将上述脚本保存为cli.php，则可以通过下面两种方法来运行：</p>
+<ul>
+<li>1、<a href="http://chensd.com/cli.php?action=5min">http://chensd.com/cli.php?action=5min</a></li>
+<li>2、/usr/bin/php cli.php 5min<br>php执行文件的位置可能会因编译或安装的情况而不一样。</li>
+</ul>
+<p>在crontab中添加如下的一行可以每隔五分钟运行一次：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">5,10,15,20,25,30,35,40,45,50,55,0 * * * * /usr/bin/php /home/xxx/cli.php 5min</div></pre></td></tr></table></figure>
+<p>或</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*/5 * * * * /usr/bin/php /home/xxx/cli.php 5min</div></pre></td></tr></table></figure>
+<h3 id="4、数据的可视化"><a href="#4、数据的可视化" class="headerlink" title="4、数据的可视化"></a>4、数据的可视化</h3><p>无论是什么样的人，总是更容易接受图表一些——这个与智商关系不大。</p>
+<p>现在的数据可视化技术实在是太丰富了，除了以前比较常见的flash和图片，现在的js可视化技术也进入了实用化阶段，而且将图表的生成工作量转给了客户端浏览器，也没有了插件的依赖，要命的是iOS也没问题……</p>
+<p><a href="http://highcharts.com/demo" target="_blank" rel="external">Highcharts</a>和<a href="http://code.google.com/p/flot/" target="_blank" rel="external">flot</a>都很不错，前者相对更成熟，后者是开源项目，Highcharts母公司新推出了<a href="http://highcharts.com/stock/demo" target="_blank" rel="external">Highstocks</a>也很不错，但是现在还在测试阶段，净highstocks.js都有300多KB。</p>
+<p>性能上讲，据称，flot表现1000个点时仍然轻松自如。从我实现的情况来看，highstocks一个图中同时显示3000余个点依然很流畅，单图15000个数据仍然可以灵活拉动highstocks的时间轴。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、使用SNMP实现对系统状态的抓取"><span class="toc-text">1、使用SNMP实现对系统状态的抓取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、获取MySQL数据库的状态数据"><span class="toc-text">2、获取MySQL数据库的状态数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、定期执行PHP脚本获取状态值"><span class="toc-text">3、定期执行PHP脚本获取状态值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、数据的可视化"><span class="toc-text">4、数据的可视化</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2011-09/php-source-convert-gbk-big5-to-utf8.html" class="prev">&larr; 上一篇 PHP源码编码与转换：搞定首行为空和“锘匡豢”</a>
+  
+
+  
+
+  
+    <a href="/2011-07/js-css-support-in-webbrowser-of-sliverlight-for-windows-phone.html" class="next">下一篇 Sliverlight for WP7 中WebBrowser控件对js和css的支持性总结 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by Stiekel using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+        &copy;
+        
+
+        2010
+        
+         - 2017
+        
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2066860"></script>
+<!-- UY END -->
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="http://7te9fe.com1.z0.glb.clouddn.com/default_avatar.jpg">
+    <p id="description">不可能不确定的博主是一名程序员。</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/stiekel">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://coding.net/u/Stiekel">
+        
+          <i class="icon iconfont coding">&#xe607;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://twitter.com/SidCN">
+        
+          <i class="icon iconfont twitter">&#xe600;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/sidcn">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://www.douban.com/people/Stiekel/">
+        
+          <i class="icon iconfont douban">&#xe60f;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="https://segmentfault.com/u/sid">
+        
+          <i class="icon iconfont segmentfault">&#xe611;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1","myvm"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?6ab46e09bc8d0da169baff9f975ecaf8";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+  <script>
+if(isTriggerAnalytics) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3804589-6', 'auto');
+  ga('send', 'pageview');
+}
+
+</script>
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+
